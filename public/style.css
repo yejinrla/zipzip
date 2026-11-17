@@ -117,7 +117,6 @@ body:not(.home-view) header{gap:2px}
 .recent-open small{font-size:11px;line-height:1.4;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .recent-open:hover,.recent-open:focus-visible,.recent-remove:hover,.recent-remove:focus-visible{background:var(--mint);outline-offset:-3px}
 .recent-remove{flex:none;width:44px;min-height:56px;font-size:18px;color:var(--muted)}
-.record-dong-row{display:contents}
 .detail-group{margin:16px 0 0}
 .detail-label{display:block;margin-bottom:8px;font-size:11px;color:#6d7f65;font-weight:500}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -128,3 +127,5 @@ body:not(.home-view) header{gap:2px}
 .visit-details div{display:contents}
 .visit-details dt{color:#8f9a86}
 .visit-details dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.dong-unit-row{display:flex;gap:10px}
+.field-col{flex:1;min-width:0}
