@@ -39,17 +39,17 @@ async function loadFootprints(force=false){
  const key=footprintKey(c),status=$('#building-status'),version=++footprintRequest;
  if(force){footprintCache.delete(key);footprintFailed.delete(key);}
  if(footprintCache.has(key)){renderMarkers();return;}
- status.hidden=false;status.textContent='단지의 동 정보를 불러오는 중…';$('#retry-buildings').hidden=true;
+ status.hidden=true;status.textContent='';$('#retry-buildings').hidden=true;
  try{const result=await api('buildings?complex='+encodeURIComponent(c.id));
  if(version!==footprintRequest||selectedComplex!==c.id||demo||recordPage)return;
  footprintCache.set(key,{items:result.items||[],candidates:result.candidates||[]});renderMarkers();
- }catch(e){if(version!==footprintRequest||selectedComplex!==c.id||demo||recordPage)return;footprintFailed.add(key);renderMarkers();status.textContent=e.message;$('#retry-buildings').hidden=false;}
+ }catch(e){if(version!==footprintRequest||selectedComplex!==c.id||demo||recordPage)return;footprintFailed.add(key);renderMarkers();status.hidden=false;status.textContent=e.message;$('#retry-buildings').hidden=false;}
 }
 function renderFootprints(){
  for(const layer of footprintLayers)layer.setMap(null);footprintLayers=[];
  const c=complex();if(!c||!map||demo||recordPage)return;
  const cached=footprintCache.get(footprintKey(c));if(!cached)return;const items=cached.items;
- $('#building-status').hidden=false;$('#building-status').textContent=items.length?'동을 눌러 기록을 추가하세요 · 출처: 행정안전부 / 브이월드':(cached.candidates.length?'이 단지 이름과 일치하는 동을 찾지 못했어요. 주변 건물: '+cached.candidates.join(', ')+'. ':'이 단지 주변에서 동 데이터를 찾지 못했어요. ')+'＋ 기록 추가로 직접 기록할 수 있어요.';
+ $('#building-status').hidden=!!items.length;$('#building-status').textContent=items.length?'':(cached.candidates.length?'이 단지 이름과 일치하는 동을 찾지 못했어요. 주변 건물: '+cached.candidates.join(', ')+'. ':'이 단지 주변에서 동 데이터를 찾지 못했어요. ')+'＋ 기록 추가로 직접 기록할 수 있어요.';
  $('#retry-buildings').hidden=true;
  for(const item of items){
  const saved=c.buildings.find(b=>b.id===item.id||b.name.trim()===item.name.trim());
