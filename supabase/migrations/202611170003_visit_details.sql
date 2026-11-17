@@ -1,4 +1,4 @@
--- Structured visit details: unit number, renovation, expansion, outlook, view,
+-- Structured visit details: unit number, renovation, expansion, facing, outlook, view,
 -- noise from neighbours above/below, condensation/mould.
 -- Run once in Supabase SQL Editor after 202611170002, BEFORE deploying the app
 -- version that writes details (older functions would drop them silently).
