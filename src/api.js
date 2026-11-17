@@ -34,7 +34,7 @@ export async function handleApi(request,env){try{
  const c=state.complexes.find(c=>c.id===url.searchParams.get('complex'));
  if(!c)return json({error:'단지를 찾을 수 없습니다.'},404);
  if(!env.VWORLD_API_KEY)return json({error:'자동 동 조회를 연결하려면 브이월드 인증키 설정이 필요해요.'},503);
- try{return json({items:await loadBuildingData(c,env),source:'행정안전부 도로명주소 건물 · 브이월드'});}catch{return json({error:'건물 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.'},502);}
+ try{return json({items:await loadBuildingData(c,env),source:'행정안전부 도로명주소 건물 · 브이월드'});}catch(e){const code=e.buildingCode||'PROVIDER_ERROR';console.warn('building_lookup_failed',code);return json({error:e.buildingCode?e.message+' ['+code+']':'건물 정보를 처리하지 못했어요. [PROVIDER_ERROR]',code},502);}
  }
  if(p==='/api/search'&&method==='GET'){
  const q=url.searchParams.get('q')?.trim();if(!q||q.length>100)fail('검색어를 1~100자로 입력해 주세요.');const s=await settings(env,owner),clientId=s.searchId||env.NAVER_SEARCH_ID,secret=s.searchSecret||env.NAVER_SEARCH_SECRET;if(!clientId||!secret)return json({error:'설정에서 네이버 지역 검색 Client ID와 Client Secret을 연결해 주세요.'},503);
