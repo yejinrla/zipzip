@@ -192,3 +192,4 @@ body.tab-view .map-bottom{bottom:16px}
 .building-actions{display:none!important}
 #record-page .record-tabs{margin-top:24px}
 #change-complex{display:none!important}
+.record-tag:first-child{font-weight:600}
