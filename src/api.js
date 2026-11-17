@@ -13,7 +13,7 @@ function validate(state){
 async function limitedJson(request,max=1024*1024){const t=await request.text();if(t.length>max)fail('저장할 내용이 너무 많습니다.',413);try{return JSON.parse(t);}catch{fail('요청 형식을 확인해 주세요.');}}
 async function settings(env,key){const o=await env.BUCKET.get(key+'/settings');return o?await o.json():{};}
 export async function handleApi(request,env){try{
- const user=request.headers.get('oai-authenticated-user-id');if(!user)return json({error:'로그인이 필요합니다.'},401);
+ const user=env.userId;if(!user)return json({error:'로그인이 필요합니다.'},401);
  if(!env.BUCKET)return json({error:'서버 저장소가 연결되지 않았습니다.'},503);
  const owner='users/'+encodeURIComponent(user),url=new URL(request.url),p=url.pathname,method=request.method;
  if(!['GET','HEAD'].includes(method)&&request.headers.get('origin')&&request.headers.get('origin')!==url.origin)return json({error:'허용되지 않은 요청입니다.'},403);
@@ -35,10 +35,10 @@ export async function handleApi(request,env){try{
  }
  if(p==='/api/photos'&&method==='POST'){
  const type=request.headers.get('content-type')?.split(';')[0];if(!['image/jpeg','image/png','image/webp'].includes(type))fail('JPG, PNG, WebP 사진을 선택해 주세요.');
- if(Number(request.headers.get('content-length'))>5*1024*1024)fail('사진은 한 장당 5MB 이하로 올려 주세요.',413);const bytes=await request.arrayBuffer();if(bytes.byteLength>5*1024*1024||bytes.byteLength<8)fail('사진은 한 장당 5MB 이하로 올려 주세요.',413);
+ if(Number(request.headers.get('content-length'))>4*1024*1024)fail('사진은 한 장당 4MB 이하로 올려 주세요.',413);const bytes=await request.arrayBuffer();if(bytes.byteLength>4*1024*1024||bytes.byteLength<8)fail('사진은 한 장당 4MB 이하로 올려 주세요.',413);
  const a=new Uint8Array(bytes),valid=type==='image/jpeg'?a[0]===255&&a[1]===216:type==='image/png'?a[0]===137&&a[1]===80&&a[2]===78&&a[3]===71:String.fromCharCode(...a.slice(0,4))==='RIFF'&&String.fromCharCode(...a.slice(8,12))==='WEBP';if(!valid)fail('유효한 사진 파일을 선택해 주세요.');
  const photoId=crypto.randomUUID();await env.BUCKET.put(owner+'/photos/'+photoId,bytes,{httpMetadata:{contentType:type}});return json({id:photoId});
  }
- if(p.startsWith('/api/photos/')&&method==='GET'){const photoId=p.slice(12);if(!id(photoId))return json({error:'사진을 찾을 수 없습니다.'},404);const obj=await env.BUCKET.get(owner+'/photos/'+photoId);if(!obj)return json({error:'사진을 찾을 수 없습니다.'},404);return new Response(obj.body,{headers:{'content-type':obj.httpMetadata?.contentType||'application/octet-stream','cache-control':'private, max-age=3600','x-content-type-options':'nosniff'}});}
+ if(p.startsWith('/api/photos/')&&method==='GET'){const photoId=p.slice(12);if(!id(photoId))return json({error:'사진을 찾을 수 없습니다.'},404);const obj=await env.BUCKET.get(owner+'/photos/'+photoId);if(!obj)return json({error:'사진을 찾을 수 없습니다.'},404);return new Response(obj.body,{headers:{'content-type':obj.httpMetadata?.contentType||'application/octet-stream','cache-control':'no-store','x-content-type-options':'nosniff'}});}
  return json({error:'요청을 찾을 수 없습니다.'},404);
  }catch(e){return json({error:e.status?e.message:'요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.'},e.status||500);}}

@@ -1,0 +1,4 @@
+import{spawn}from'node:child_process';import assert from'node:assert/strict';import{once}from'node:events';
+const port=4317,child=spawn(process.execPath,['scripts/dev.mjs','--port',String(port)],{env:{...process.env,SUPABASE_URL:'',SUPABASE_ANON_KEY:''},stdio:['ignore','pipe','pipe']});
+const timer=setTimeout(()=>child.kill(),15000);
+try{await once(child.stdout,'data');for(const path of ['/','/auth.js','/photos.js','/app.js','/style.css']){const r=await fetch('http://localhost:'+port+path);assert.equal(r.status,200,path);assert((await r.text()).length>0);}const config=await(await fetch('http://localhost:'+port+'/api/config')).json();assert.equal(config.configured,false);const r=await fetch('http://localhost:'+port+'/api/state',{headers:{'oai-authenticated-user-id':'fake'}});assert.equal(r.status,503);console.log('HTTP smoke passed: static assets, public configuration, fail-closed API.');}finally{clearTimeout(timer);child.kill();}

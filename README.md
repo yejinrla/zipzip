@@ -1,15 +1,36 @@
-# 동네노트
-네이버 지도 기반 개인 아파트 임장 기록장. `npm test`, `npm run build`, `npm run dev`.
+# 동네노트 / zipzip
+한국 아파트 단지를 검색하고 지도에 동 위치를 등록한 뒤, 동별 방문일·메모·사진을 남기는 웹사이트입니다. 여러 사람이 가입할 수 있고 각자의 기록과 사진은 본인만 볼 수 있습니다.
 
-## 연결
-설정에서 신규 네이버 클라우드 **Maps → Web Dynamic Map**의 Key ID를 입력하고 실제 배포 origin을 웹 서비스 URL에 등록합니다. 구 AI NAVER API는 사용하지 않습니다. 단지 검색은 네이버 개발자센터의 검색(지역) API Client ID/Secret을 별도로 입력합니다. 검색은 최대 5개 결과이며 검색 데이터에 없는 단지는 검색어를 구체화해야 합니다.
+**현재 소스는 Vercel + Supabase용입니다.** 이전 ChatGPT Sites 배포는 이전 버전으로 남아 있으며 GitHub 변경으로 자동 갱신되지 않습니다. 새 배포는 [설정 가이드](docs/DEPLOY.md)를 따라 진행하세요.
 
-## 저장·접근
-Sites 비공개 로그인과 `oai-authenticated-user-id`를 사용합니다. `BUCKET` R2 바인딩이 필요합니다. 사용자별 JSON 상태와 사진·설정을 서버 저장하며 ETag로 다른 창의 변경 덮어쓰기를 방지합니다. 검색 비밀키는 서버에서만 사용됩니다. 저장 실패 시 작성 폼을 유지합니다. 삭제된 기록의 원본 사진은 저장소에 남으므로 대규모 운영 시 별도 정리 정책이 필요합니다.
+## 구성
+- 기존 HTML/CSS/JS 화면, Supabase JS 이메일 인증·로그인·로그아웃·비밀번호 재설정
+- Vercel Node API가 Supabase Auth로 매 요청의 액세스 토큰을 검증
+- PostgreSQL `complexes`, `buildings`, `visits` 테이블과 사용자별 RLS
+- 트랜잭션 + 사용자별 잠금 + 버전 검사로 다른 창의 저장 덮어쓰기 방지
+- 비공개 `journal-photos` Storage, 사용자 UUID 경로별 RLS, 인증된 API로 사진 열람
+- 네이버 Maps v3와 지역 검색 API. 개별 동 위치는 사용자가 직접 추가
 
-로컬 개발은 `.local-data` 파일에 저장하고 고정된 로컬 사용자로 실행합니다. 이 서버는 개발용이며 공개 배포에 사용하지 않습니다. 배포는 `dist/server/index.js` Worker입니다. 서버 헤더 신뢰는 Sites 게이트를 전제로 합니다.
+## 로컬 실행
+Node.js 22 이상이 필요합니다.
+```sh
+npm ci
+cp .env.example .env.local
+# .env.local에 프로젝트의 URL과 anon/publishable key 입력
+# Supabase에 supabase/migrations/202611170001_private_journal.sql 적용
+npm run dev
+```
+환경변수가 없으면 연결 준비 화면이 표시됩니다. 로컬에서도 로그인 없이 임의 사용자로 저장하지 않습니다.
 
-사진은 JPG/PNG/WebP 최대 5MB, 기록당 12장. 데이터는 자동 동 번호/윤곽 검색 없이 사용자가 동을 추가합니다. 샘플은 실제 지도가 아닌 예시 배치이며 메모리를 벗어나 저장되지 않습니다.
+```sh
+npm test
+npm run build
+```
+테스트는 API 인증, 위조 헤더 차단, 사용자 격리, 동시 수정 충돌, PostgreSQL RLS 및 Storage 정책을 검증합니다. PostgreSQL 검증은 PGlite에서 실행합니다. 실제 Supabase Auth 메일 발송/프로덕션 Storage와 네이버 지도는 실 프로젝트 연결 후 별도 확인해야 합니다.
 
-## 환경
-외부 런타임 값으로 `NAVER_MAP_KEY`, `NAVER_SEARCH_ID`, `NAVER_SEARCH_SECRET`도 지원합니다. 사용자 설정이 우선합니다. API 키 없이 실제 지도/검색 검증은 불가능하며 샘플에서 기록 흐름을 확인할 수 있습니다.
+## 제한과 데이터 이전
+- 사진은 JPG/PNG/WebP, 장당 4 MiB, 기록당 최대 12장입니다. Vercel 요청 크기 제한을 고려했습니다.
+- 삭제한 기록에서 참조하던 원본 사진은 Storage에 남습니다. 정리 정책은 후속 구현이 필요합니다.
+- 첫 버전은 전체 기록을 한 트랜잭션으로 저장합니다. 사용자가 많은 기록을 쌓는 서비스로 확장하면 동·방문별 저장 API를 도입할 수 있습니다.
+- 이전 Sites 계정 ID와 Supabase 계정 UUID는 다릅니다. 기존 실제 기록·사진은 자동 이전하지 않습니다. `.local-data`도 자동 업로드하지 않습니다.
+- 배포 환경변수의 네이버 키를 사용하면 이용자마다 별도 키를 준비할 필요가 없습니다. 개인 키는 연결 설정에서 선택적으로 지정할 수 있습니다.
