@@ -1,5 +1,8 @@
 import{PhotoLoader}from'../src/photo-loader.js';
 const loader=new PhotoLoader({token:()=>window.zipzipAuth.token()});
 const targets=new WeakMap();
-const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;const{img,id,anchor}=targets.get(entry.target);loader.load(id).then(url=>{if(url&&img.isConnected){img.src=url;if(anchor)anchor.href=url;}}).catch(()=>{img.alt='사진을 불러오지 못했어요. 기록장을 다시 열면 재시도합니다.';});}},{rootMargin:'100px'});
+// A failed photo shows a retry button with a short reason code instead of a broken image.
+function showFailure(img,id,anchor,error){const holder=anchor||img;holder.hidden=true;const fail=document.createElement('button');fail.type='button';fail.className='photo-failed';fail.textContent='사진을 불러오지 못했어요. 눌러서 다시 시도';if(error?.code){const code=document.createElement('small');code.textContent=error.code;fail.append(code);}fail.onclick=()=>{fail.remove();holder.hidden=false;load(img,id,anchor);};holder.after(fail);}
+function load(img,id,anchor){loader.load(id).then(url=>{if(url&&img.isConnected){img.src=url;if(anchor)anchor.href=url;}}).catch(error=>{if(img.isConnected)showFailure(img,id,anchor,error);});}
+const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;observer.unobserve(entry.target);const{img,id,anchor}=targets.get(entry.target);load(img,id,anchor);}},{rootMargin:'100px'});
 window.zipzipPhotos={attach(img,id,anchor){if(id.startsWith('blob:')){img.src=id;if(anchor)anchor.href=id;return;}img.loading='lazy';targets.set(img,{img,id,anchor});observer.observe(img);},reset(){observer.disconnect();loader.clear();}};

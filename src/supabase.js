@@ -12,7 +12,7 @@ export function createUserStorage(env, token, userId, fetcher=fetch) {
   if(p==='state'){const r=await call('/rest/v1/rpc/journal_load',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}),data=await r.json();return data.revision===null?null:{etag:data.revision,json:async()=>data.state};}
   if(p==='recent'){const r=await call('/rest/v1/recent_complexes?select=ids&user_id=eq.'+encodeURIComponent(userId));const [row]=await r.json();return row?{json:async()=>({ids:row.ids})}:null;}
   if(p==='settings'){const r=await call('/rest/v1/user_settings?select=map_key,search_id,search_secret&user_id=eq.'+encodeURIComponent(userId));const [s]=await r.json();return s?{json:async()=>({mapKey:s.map_key,searchId:s.search_id,searchSecret:s.search_secret})}:null;}
-  if(p.startsWith('photos/')){const r=await fetcher(base+'/storage/v1/object/authenticated/journal-photos/'+userId+'/'+encodeURIComponent(p.slice(7)),{headers,signal:AbortSignal.timeout(15000)});if(r.status===404||r.status===400)return null;if(!r.ok)throw new Error('Photo read failed');return{body:r.body,httpMetadata:{contentType:r.headers.get('content-type')}};}
+  if(p.startsWith('photos/')){const r=await fetcher(base+'/storage/v1/object/authenticated/journal-photos/'+userId+'/'+encodeURIComponent(p.slice(7)),{headers,signal:AbortSignal.timeout(15000)});if(!r.ok){const detail=(await r.text().catch(()=>'')).slice(0,200);console.warn('photo_read_failed',r.status,detail);if(r.status===404||(r.status===400&&/not.?found/i.test(detail)))return null;throw Object.assign(new Error('Photo read failed'),{photoStatus:r.status});}return{body:r.body,httpMetadata:{contentType:r.headers.get('content-type')}};}
   return null;
  },
  async put(key,body,options={}){const p=pathFor(key);
