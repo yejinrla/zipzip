@@ -59,3 +59,6 @@ dialog{width:min(448px,calc(100% - 32px));padding:24px;max-height:85dvh}
 .auth-spinner{width:22px;height:22px;border:2px solid var(--line);border-top-color:var(--green);border-radius:50%;animation:auth-spin .8s linear infinite}
 @keyframes auth-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.auth-spinner{animation:none}}
+
+/* Reserve the map's layout while keeping startup placeholders out of view. */
+#app-shell[aria-busy="true"]{visibility:hidden;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;pointer-events:none}
