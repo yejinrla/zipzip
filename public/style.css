@@ -105,3 +105,15 @@ body:not(.home-view) header{gap:2px}
 #record-page .save-row{margin-top:18px}
 
 .building-data-status{position:absolute;left:14px;right:85px;top:78px;z-index:30;font-size:12px;color:#31594d;pointer-events:none}.building-data-status span:not([hidden]){display:inline-block;padding:8px 10px;background:rgba(255,255,255,.94);border-radius:10px}.building-data-status button{pointer-events:auto;margin-top:5px;padding:7px 10px;background:#fff;border:1px solid #cdd8ce;border-radius:8px;color:#285e50}
+.recent-section{width:100%}
+.recent-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.recent-head h2{margin:0;font-size:14px;font-weight:700}
+.recent-head .text-button{font-size:12px;color:var(--muted)}
+.recent-list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;background:#fffefa;overflow:hidden}
+.recent-item{display:flex;align-items:stretch}
+.recent-item+.recent-item{border-top:1px solid var(--line)}
+.recent-open{flex:1;min-width:0;min-height:56px;padding:10px 4px 10px 16px;display:flex;flex-direction:column;justify-content:center;gap:2px;text-align:left}
+.recent-open strong{font-size:14px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recent-open small{font-size:11px;line-height:1.4;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recent-open:hover,.recent-open:focus-visible,.recent-remove:hover,.recent-remove:focus-visible{background:var(--mint);outline-offset:-3px}
+.recent-remove{flex:none;width:44px;min-height:56px;font-size:18px;color:var(--muted)}
