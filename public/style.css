@@ -62,3 +62,12 @@ dialog{width:min(448px,calc(100% - 32px));padding:24px;max-height:85dvh}
 
 /* Reserve the map's layout while keeping startup placeholders out of view. */
 #app-shell[aria-busy="true"]{visibility:hidden;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;pointer-events:none}
+
+.search-wrap{position:relative;margin-bottom:18px;z-index:6}
+#search-results{position:absolute;top:calc(100% + 6px);left:0;right:0;max-height:min(320px,50dvh);overflow-y:auto;background:#fffefa;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px #203d3324;overscroll-behavior:contain}
+#search-results .result{padding:14px 16px;min-height:60px}
+#search-results .result:last-child{border-bottom:0}
+#search-results .result:hover,#search-results .result:focus-visible{background:var(--mint);outline-offset:-3px}
+#search-results .result strong{font-size:14px;line-height:1.5}
+#search-results .result small{font-size:11px;line-height:1.5}
+#search-results .search-error,#search-results .list-empty-note{padding:16px;margin:0;font-size:12px}
