@@ -165,3 +165,4 @@ body.tab-view .map-bottom{bottom:16px}
 #record-dong::-webkit-calendar-picker-indicator{display:none!important;opacity:0}
 #map-heading,.map-legend{display:none!important}
 .map-bottom .add-button{margin-left:auto}
+#record-page .panel-top{display:none}
