@@ -133,7 +133,7 @@ body:not(.home-view) header{gap:2px}
 .tab-bar button{flex:1;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:var(--muted)}
 .tab-bar button span{font-size:19px;line-height:1}
 .tab-bar button[aria-current=page]{color:var(--green);font-weight:700}
-body.tab-view{padding-bottom:calc(58px + env(safe-area-inset-bottom))}
+body.tab-view #app-shell{padding-bottom:calc(58px + env(safe-area-inset-bottom))}
 body.tab-view .home-page{min-height:calc(100dvh - 122px - env(safe-area-inset-bottom))}
 .records-page{padding:28px 20px 32px}
 .records-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
@@ -152,3 +152,6 @@ body.tab-view .home-page{min-height:calc(100dvh - 122px - env(safe-area-inset-bo
 .records-empty{padding:48px 16px;text-align:center;color:var(--muted);font-size:13px}
 .records-empty p{margin:0 0 6px}
 .records-empty .primary{margin-top:18px;padding:0 20px;min-height:48px}
+body.tab-view main,body.tab-view #detail-page{min-height:calc(100dvh - 122px - env(safe-area-inset-bottom))}
+body.tab-view #detail-page .map-section{height:calc(100dvh - 303px - env(safe-area-inset-bottom));min-height:380px}
+body.tab-view .map-bottom{bottom:16px}
