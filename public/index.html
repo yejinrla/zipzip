@@ -1,16 +1,348 @@
-<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="application-name" content="집.zip"><meta name="theme-color" content="#275c4b"><title>집.zip — 동마다 쌓이는 나의 임장 기록</title><meta name="description" content="아파트를 찾고, 동을 선택하고, 현장에서 느낀 것을 남기세요. 나만의 지도 위 임장 기록장."><link rel="stylesheet" href="/style.css"></head><body>
-<section id="auth-loading" class="auth-loading" role="status" aria-live="polite"><span class="brandmark">▥</span><strong>집.zip</strong><span class="auth-spinner" aria-hidden="true"></span><p>로그인 상태 확인 중…</p></section><section id="auth-gate" class="auth-gate" hidden><div id="auth-card" class="auth-card"><span class="brandmark">▥</span><span class="eyebrow">집.zip</span><h1 id="auth-title">나의 임장 기록으로</h1><p>단지부터 동까지, 나만의 발견을 남겨요.<br>기록과 사진은 본인만 볼 수 있어요.</p><form id="auth-form"><div id="auth-email-row"><label for="auth-email">이메일</label><input id="auth-email" type="email" autocomplete="email" required></div><div id="auth-password-row"><label for="auth-password">비밀번호</label><input id="auth-password" type="password" minlength="8" maxlength="128" autocomplete="current-password" required></div><button id="auth-submit" class="primary wide" type="submit">로그인</button></form><p id="auth-message" role="status" aria-live="polite"></p><div class="auth-links"><button id="auth-signin">로그인</button><button id="auth-signup">회원가입</button><button id="auth-recover">비밀번호 찾기</button></div></div><div id="setup-card" class="auth-card" hidden><span class="brandmark">▥</span><span class="eyebrow">집.zip</span><h1>연결을 준비하고 있어요</h1><p>서비스 설정이 완료되면 회원가입과<br>나만의 임장 기록을 시작할 수 있어요.</p></div></section><div id="app-shell" aria-busy="true" hidden>
-<header><button id="detail-back" class="icon-button" aria-label="뒤로가기" hidden>←</button><a id="home-link" class="brand" href="/" aria-label="집.zip 홈"><span class="brandmark">▥</span>집.zip<span class="brand-en">집.zip</span></a><nav><button id="change-complex" class="text-button" hidden>다른 단지 검색</button><span id="account-email" class="account-email"></span><button id="signout" class="text-button">로그아웃</button><span class="private"><i></i> 나만의 임장 지도</span><button class="icon-button" id="settings" aria-label="네이버 API 연결 설정">⚙ <span>연결 설정</span></button></nav></header>
-<div id="demo-banner" hidden>샘플 둘러보기 · 아래 단지 배치는 예시이며 기록은 저장되지 않아요.<button id="exit-demo">내 지도로 돌아가기 ↗</button></div>
-<section id="home-page" class="home-page" hidden><div class="home-logo"><span class="brandmark">▥</span><h1>집.zip</h1></div><div class="search-wrap"><form id="search-form" class="search"><span>⌕</span><input id="query" role="combobox" aria-autocomplete="list" aria-controls="search-results" aria-expanded="false" aria-label="아파트 단지 검색" autocomplete="off" placeholder="아파트 단지명 검색" maxlength="100" required><button aria-label="검색" type="submit">↗</button></form><div id="search-results" role="listbox" aria-label="관련 아파트 검색 결과" aria-live="polite" hidden></div></div><section id="recent-section" class="recent-section" aria-labelledby="recent-title" hidden><div class="recent-head"><h2 id="recent-title">최근 검색한 아파트</h2><button id="clear-recent" class="text-button" type="button">전체 삭제</button></div><ul id="recent-list" class="recent-list"></ul></section></section><section id="records-page" class="records-page" aria-labelledby="records-title" hidden><button id="records-back" class="text-button records-back" type="button" hidden>← 아파트 목록</button><div class="records-head"><div><h1 id="records-title">내 기록</h1><p id="records-sub" class="records-sub" hidden></p></div><span id="records-count"></span></div><button id="records-map" class="text-button records-map" type="button" hidden>단지 지도 보기 →</button><div id="records-list" class="records-list"></div></section><main id="detail-page" hidden><aside class="sidebar" id="sidebar">
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="application-name" content="집.zip">
+<meta name="theme-color" content="#F3F2EE">
+<title>집.zip: 나의 임장 수첩</title>
+<meta name="description" content="아파트 단지를 찾고, 다녀온 동을 고르고, 현장에서 본 것을 남기는 나만의 임장 수첩.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<section id="auth-loading" class="auth-loading" role="status" aria-live="polite">
+  <span class="brandmark" aria-hidden="true"></span>
+  <strong>집.zip</strong>
+  <span class="spinner" aria-hidden="true"></span>
+  <p>로그인 상태를 확인하고 있어요</p>
+</section>
 
-<div id="complex-list" class="complex-list"></div>
-<div class="sidebar-tip"><span>✎</span><div><strong>작은 발견도 놓치지 않도록</strong><p>햇빛, 소음, 산책길까지.<br>현장에서의 느낌을 동별로 남겨요.</p></div></div><div class="sidebar-footer"><span id="sync-status">서버 연결 중</span><span>PRIVATE JOURNAL ↗</span></div></aside>
-<section class="map-section" aria-label="임장 지도"><div id="map"></div><p id="map-loading" class="map-loading" role="status" hidden>지도를 불러오는 중…</p><div id="map-placeholder"><div class="map-grid"></div><div class="schematic" id="schematic" hidden></div><div class="connect-card" id="connect-card"><span class="large-icon">⌖</span><span class="eyebrow">YOUR NEXT NEIGHBORHOOD</span><h2>다음 임장은 어디인가요?</h2><p>네이버 지도를 연결하면 단지를 검색하고<br>동별로 나만의 기록을 쌓을 수 있어요.</p><button class="primary" id="connect-start">네이버 지도 연결하기 <span>↗</span></button><button class="text-button demo-link" id="demo-start">먼저 샘플 둘러보기 →</button><small>연결 전에는 실제 지도가 표시되지 않습니다.</small></div></div>
-<div class="map-heading" id="map-heading"><span class="map-pill"><i></i> 나의 임장 지도</span></div><div class="map-tools"><button id="locate" aria-label="현재 위치로 이동">⌖</button><div><button id="zoom-in" aria-label="지도 확대">+</button><button id="zoom-out" aria-label="지도 축소">−</button></div></div>
-<div class="building-data-status"><span id="building-status" role="status" hidden></span><button id="retry-buildings" hidden>다시 조회</button></div><div class="map-bottom"><div class="map-legend"><span><i class="green"></i> 기록 있음</span><span><i class="white"></i> 둘러볼 동</span></div><button class="primary add-button" id="add-building" disabled>＋ 기록 추가</button></div><div class="map-hint" id="map-hint" hidden></div></section>
-</main><section id="record-page" class="record-page" hidden><aside class="record-panel" id="record-panel" hidden><div class="panel-top"><span class="eyebrow">임장 기록 추가</span><button class="icon-button" id="close-panel" aria-label="단지 지도로 돌아가기">← 지도</button></div><div id="building-title"></div><div class="building-actions"><button id="rename-building" class="text-button">이름 수정</button><button id="move-building" class="text-button">위치 수정</button><button id="delete-building" class="text-button danger">동 삭제</button></div><div class="record-tabs"><strong>임장 기록 <span id="visit-count">0</span></strong><button id="new-visit" class="text-button">＋ 새 기록</button></div><form id="visit-form"><div class="dong-unit-row"><div id="record-dong-row" class="field-col" hidden><label for="record-dong">동</label><input id="record-dong" list="record-dong-options" placeholder="예: 101동" maxlength="40" autocomplete="off"><datalist id="record-dong-options"></datalist></div><div class="field-col"><label for="visit-unit">호수</label><input id="visit-unit" maxlength="20" placeholder="예: 1203호" autocomplete="off"></div></div><label for="visit-date">방문일</label><input type="date" id="visit-date" required><div class="detail-group"><span class="detail-label" id="label-deal">거래</span><div id="choice-deal" class="chips" role="group" aria-labelledby="label-deal"></div></div><label for="visit-price">가격</label><input id="visit-price" maxlength="40" placeholder="예: 12억 5천 · 보증금 5천 / 월 150" autocomplete="off"><div class="detail-group"><span class="detail-label" id="label-renovation">수리 상태</span><div id="choice-renovation" class="chips" role="group" aria-labelledby="label-renovation"></div></div><div id="renovated-row" hidden><label for="visit-renovated">수리 시기</label><input id="visit-renovated" maxlength="20" placeholder="예: 3년 전, 2022년" autocomplete="off"></div><div class="detail-group"><span class="detail-label" id="label-expansion">확장</span><div id="choice-expansion" class="chips" role="group" aria-labelledby="label-expansion"></div></div><div class="detail-group"><span class="detail-label" id="label-facing">향</span><div id="choice-facing" class="chips" role="group" aria-labelledby="label-facing"></div></div><div class="detail-group"><span class="detail-label" id="label-outlook">조망</span><div id="choice-outlook" class="chips" role="group" aria-labelledby="label-outlook"></div></div><label for="visit-view">뷰</label><input id="visit-view" maxlength="100" placeholder="예: 공원뷰, 앞동과 거리 넉넉" autocomplete="off"><div class="detail-group"><span class="detail-label" id="label-noise">위아래 소음</span><div id="choice-noise" class="chips" role="group" aria-labelledby="label-noise"></div></div><div class="detail-group"><span class="detail-label" id="label-mold">결로·곰팡이</span><div id="choice-mold" class="chips" role="group" aria-labelledby="label-mold"></div></div><label for="memo">메모</label><textarea id="memo" maxlength="10000" placeholder="결로·곰팡이 위치, 일조량, 단지 분위기, 출입구와 주차장까지 자유롭게 남겨 보세요." rows="6"></textarea><label for="photos" class="photo-upload">＋ 사진 추가 <span>JPG · PNG · WebP / 장당 4MB</span></label><input id="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><div id="photo-preview" class="photo-grid"></div><div class="save-row"><button class="primary" type="submit" id="save-visit">기록 저장 ↗</button><button type="button" id="cancel-edit" class="text-button" hidden>수정 취소</button></div></form><div id="visit-list"></div></aside></section>
-<nav id="tab-bar" class="tab-bar" aria-label="주요 메뉴"><button id="tab-home" type="button"><span aria-hidden="true">⌕</span>검색</button><button id="tab-records" type="button"><span aria-hidden="true">▤</span>내 기록</button></nav><dialog id="settings-dialog"><form id="settings-form"><div class="dialog-header"><div><span class="eyebrow">CONNECT YOUR MAP</span><h2>네이버 지도 연결</h2></div><button type="button" class="icon-button" data-close="settings-dialog" aria-label="설정 닫기">✕</button></div><p class="muted">지도와 단지 검색을 연결하세요. 검색 비밀키는 본인 전용 서버 저장소에 보관돼요.</p><label for="map-key">Maps Key ID <span>지도 표시</span></label><input id="map-key" autocomplete="off" placeholder="네이버 클라우드 Maps의 Key ID"><p class="field-help">신규 Maps 서비스의 Web Dynamic Map을 활성화하고, 웹 서비스 URL에 <code id="site-origin"></code>을 등록해 주세요.</p><label for="search-id">검색 Client ID <span>단지 검색</span></label><input id="search-id" autocomplete="off" placeholder="NAVER API HUB → NAVER 검색 → 지역"><label for="search-secret">검색 Client Secret</label><input id="search-secret" type="password" autocomplete="new-password" placeholder="변경할 때만 입력"><p class="field-help" id="secret-status"></p><div class="setup-links"><a href="https://console.ncloud.com/" target="_blank" rel="noopener">네이버 클라우드 ↗</a><a href="https://console.ncloud.com/" target="_blank" rel="noopener">NAVER API HUB ↗</a></div><button class="primary wide" type="submit">연결 설정 저장</button></form></dialog>
-<dialog id="name-dialog"><form id="name-form"><div class="dialog-header"><h2 id="name-title">동 추가</h2><button class="icon-button" type="button" data-close="name-dialog" aria-label="닫기">✕</button></div><label for="building-name">동 이름</label><input id="building-name" placeholder="예: 101동" maxlength="40" required><button type="submit" class="primary wide">저장</button></form></dialog>
-<dialog id="confirm-dialog"><h2 id="confirm-title">삭제할까요?</h2><p id="confirm-message"></p><div class="confirm-actions"><button id="confirm-no" class="secondary">취소</button><button id="confirm-yes" class="primary">삭제</button></div></dialog>
-<div id="toast" role="status" hidden></div></div><script src="/auth.js" defer></script><script src="/photos.js" defer></script><script src="/app.js" defer></script></body></html>
+<section id="auth-gate" class="auth-gate" hidden>
+  <div id="auth-card" class="auth-card">
+    <span class="brandmark" aria-hidden="true"></span>
+    <p class="auth-brand">집.zip</p>
+    <h1 id="auth-title">나의 임장 기록으로</h1>
+    <p class="auth-intro">동마다 쌓이는 나만의 임장 기록.<br>기록과 사진은 나만 볼 수 있어요.</p>
+    <form id="auth-form" class="stack">
+      <div id="auth-email-row" class="field">
+        <label for="auth-email">이메일</label>
+        <input id="auth-email" type="email" autocomplete="email" placeholder="name@example.com" required>
+      </div>
+      <div id="auth-password-row" class="field">
+        <label for="auth-password">비밀번호</label>
+        <input id="auth-password" type="password" minlength="8" maxlength="128" autocomplete="current-password" placeholder="8자 이상" required>
+      </div>
+      <p id="auth-message" class="form-message" role="status" aria-live="polite"></p>
+      <button id="auth-submit" class="btn btn-primary btn-block" type="submit">로그인</button>
+    </form>
+    <div class="auth-links">
+      <button id="auth-signin" class="btn btn-text" type="button">로그인</button>
+      <button id="auth-signup" class="btn btn-text" type="button">회원가입</button>
+      <button id="auth-recover" class="btn btn-text" type="button">비밀번호 찾기</button>
+    </div>
+  </div>
+  <div id="setup-card" class="auth-card" hidden>
+    <span class="brandmark" aria-hidden="true"></span>
+    <p class="auth-brand">집.zip</p>
+    <h1>서비스를 준비하고 있어요</h1>
+    <p class="auth-intro">서버 설정이 끝나면 회원가입과 기록을 시작할 수 있어요.</p>
+  </div>
+</section>
+
+<div id="app-shell" aria-busy="true" hidden>
+  <header class="app-header">
+    <button id="detail-back" class="icon-btn" type="button" aria-label="뒤로" hidden>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <a id="home-link" class="brand" href="/" aria-label="집.zip 홈"><span class="brandmark" aria-hidden="true"></span>집.zip</a>
+    <button id="change-complex" class="btn btn-text" type="button" hidden>다른 단지 검색</button>
+    <button id="settings" class="icon-btn" type="button" aria-label="설정">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </header>
+
+  <div id="demo-banner" class="demo-banner" hidden>
+    <span>샘플을 보고 있어요. 여기서 남긴 기록은 저장되지 않아요.</span>
+    <button id="exit-demo" class="btn btn-text" type="button">내 수첩으로</button>
+  </div>
+
+  <section id="home-page" class="home-page" hidden>
+    <div class="page-title">
+      <h1>나의 임장 수첩</h1>
+      <p id="home-summary" class="lead"></p>
+    </div>
+    <div class="search-wrap">
+      <form id="search-form" class="search" role="search">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="query" role="combobox" aria-autocomplete="list" aria-controls="search-results" aria-expanded="false" aria-label="아파트 단지 검색" autocomplete="off" placeholder="아파트 단지 검색" maxlength="100" required>
+        <button class="visually-hidden" type="submit">검색</button>
+      </form>
+      <div id="search-results" class="search-results" role="listbox" aria-label="검색 결과" aria-live="polite" hidden></div>
+    </div>
+
+    <section id="home-recent" class="home-section" aria-labelledby="home-recent-title" hidden>
+      <div class="section-head">
+        <h2 id="home-recent-title">최근 기록</h2>
+        <button id="home-all" class="btn btn-text btn-small" type="button">전체 보기</button>
+      </div>
+      <div id="home-recent-list" class="entry-list"></div>
+    </section>
+
+    <section id="recent-section" class="home-section" aria-labelledby="recent-title" hidden>
+      <div class="section-head">
+        <h2 id="recent-title">다시 볼 단지</h2>
+        <button id="clear-recent" class="btn btn-text btn-small" type="button">모두 지우기</button>
+      </div>
+      <ul id="recent-list" class="recent-list"></ul>
+    </section>
+
+    <section id="home-empty" class="home-section home-empty" hidden>
+      <ol class="steps">
+        <li><span>1</span>관심 있는 단지를 검색해요</li>
+        <li><span>2</span>지도에서 다녀온 동을 눌러요</li>
+        <li><span>3</span>가격, 집 상태, 사진을 남겨요</li>
+      </ol>
+    </section>
+  </section>
+
+  <section id="records-page" class="records-page" aria-labelledby="records-title" hidden>
+    <button id="records-back" class="btn btn-text records-back" type="button" hidden>아파트 목록</button>
+    <div class="page-title">
+      <h1 id="records-title">기록</h1>
+      <p id="records-sub" class="lead" hidden></p>
+      <p id="records-count" class="meta"></p>
+    </div>
+    <button id="records-map" class="btn btn-secondary btn-small records-map" type="button" hidden>단지 지도 보기</button>
+    <div id="records-list" class="card-list"></div>
+  </section>
+
+  <main id="detail-page" class="detail-page" hidden>
+    <div class="sidebar" id="sidebar">
+      <div id="complex-list" class="complex-list"></div>
+    </div>
+    <section class="map-section" aria-label="단지 지도">
+      <div id="map"></div>
+      <p id="map-loading" class="map-loading" role="status" hidden><span class="visually-hidden">지도를 불러오는 중</span></p>
+      <div id="map-placeholder">
+        <div class="schematic" id="schematic" hidden></div>
+        <div class="connect-card" id="connect-card">
+          <h2>지도를 연결해 주세요</h2>
+          <p>네이버 지도를 연결하면 단지 주변을 보며 동별로 기록할 수 있어요.</p>
+          <button class="btn btn-primary" id="connect-start" type="button">네이버 지도 연결</button>
+          <button class="btn btn-text" id="demo-start" type="button">샘플 먼저 보기</button>
+        </div>
+      </div>
+      <div class="map-heading" id="map-heading" hidden></div>
+      <div class="map-tools">
+        <button id="locate" type="button" aria-label="현재 위치로 이동">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </button>
+        <button id="zoom-in" type="button" aria-label="지도 확대">+</button>
+        <button id="zoom-out" type="button" aria-label="지도 축소">−</button>
+      </div>
+      <div class="building-data-status">
+        <span id="building-status" role="status" hidden></span>
+        <button id="retry-buildings" class="btn btn-secondary btn-small" type="button" hidden>다시 불러오기</button>
+      </div>
+      <div class="map-bottom">
+        <p class="map-bottom-hint">건물을 눌러 그 동에 기록하거나, 직접 입력하세요.</p>
+        <button class="btn btn-primary add-button" id="add-building" type="button" disabled>기록 추가</button>
+      </div>
+      <div class="map-hint" id="map-hint" hidden></div>
+    </section>
+  </main>
+
+  <section id="record-page" class="record-page" hidden>
+    <div class="record-panel" id="record-panel" hidden>
+      <div class="panel-top">
+        <button id="close-panel" class="btn btn-text" type="button">지도</button>
+      </div>
+      <div id="building-title" class="building-title"></div>
+      <div class="building-actions">
+        <button id="rename-building" type="button">이름 수정</button>
+        <button id="move-building" type="button">위치 수정</button>
+        <button id="delete-building" type="button">동 삭제</button>
+      </div>
+      <div class="record-tabs">
+        <p class="meta">방문 <span id="visit-count">0</span>번</p>
+        <button id="new-visit" class="btn btn-secondary btn-small" type="button">새 기록</button>
+      </div>
+
+      <form id="visit-form" class="visit-form">
+        <fieldset class="form-section">
+          <legend>기본</legend>
+          <div class="field-row">
+            <div id="record-dong-row" class="field" hidden>
+              <label for="record-dong">동</label>
+              <input id="record-dong" list="record-dong-options" placeholder="101동" maxlength="40" autocomplete="off">
+              <datalist id="record-dong-options"></datalist>
+            </div>
+            <div class="field">
+              <label for="visit-unit">호수</label>
+              <input id="visit-unit" maxlength="20" placeholder="1203호" autocomplete="off">
+            </div>
+          </div>
+          <div class="field">
+            <label for="visit-date">방문일</label>
+            <input type="date" id="visit-date" required>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>거래</legend>
+          <div class="field">
+            <span class="field-label" id="label-deal">거래 유형</span>
+            <div id="choice-deal" class="chips" role="group" aria-labelledby="label-deal"></div>
+          </div>
+          <div class="field">
+            <label for="visit-price">가격</label>
+            <input id="visit-price" maxlength="40" placeholder="12억 5천, 보증금 5천 / 월 150" autocomplete="off">
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>집 상태</legend>
+          <div class="field">
+            <span class="field-label" id="label-renovation">수리</span>
+            <div id="choice-renovation" class="chips" role="group" aria-labelledby="label-renovation"></div>
+          </div>
+          <div id="renovated-row" class="field" hidden>
+            <label for="visit-renovated">수리 시기</label>
+            <input id="visit-renovated" maxlength="20" placeholder="3년 전, 2022년" autocomplete="off">
+          </div>
+          <div class="field">
+            <span class="field-label" id="label-expansion">확장</span>
+            <div id="choice-expansion" class="chips" role="group" aria-labelledby="label-expansion"></div>
+          </div>
+          <div class="field">
+            <span class="field-label" id="label-facing">향</span>
+            <div id="choice-facing" class="chips chips-grid" role="group" aria-labelledby="label-facing"></div>
+          </div>
+          <div class="field">
+            <span class="field-label" id="label-outlook">조망</span>
+            <div id="choice-outlook" class="chips" role="group" aria-labelledby="label-outlook"></div>
+          </div>
+          <div class="field">
+            <label for="visit-view">뷰</label>
+            <input id="visit-view" maxlength="100" placeholder="공원뷰, 앞동과 거리 넉넉" autocomplete="off">
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>생활</legend>
+          <div class="field">
+            <span class="field-label" id="label-noise">위아래 소음</span>
+            <div id="choice-noise" class="chips" role="group" aria-labelledby="label-noise"></div>
+          </div>
+          <div class="field">
+            <span class="field-label" id="label-mold">결로·곰팡이</span>
+            <div id="choice-mold" class="chips" role="group" aria-labelledby="label-mold"></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>메모와 사진</legend>
+          <div class="field">
+            <label for="memo" class="visually-hidden">메모</label>
+            <textarea id="memo" maxlength="10000" rows="5" placeholder="일조량, 단지 분위기, 결로 위치, 출입구와 주차장까지 자유롭게"></textarea>
+          </div>
+          <div id="photo-preview" class="photo-preview"></div>
+          <label for="photos" class="photo-upload">
+            <span>사진 추가</span>
+            <small>JPG, PNG, WebP · 장당 4MB · 최대 12장</small>
+          </label>
+          <input id="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+        </fieldset>
+
+        <div class="save-row">
+          <button type="button" id="cancel-edit" class="btn btn-text" hidden>취소</button>
+          <button class="btn btn-primary" type="submit" id="save-visit">기록 저장</button>
+        </div>
+      </form>
+      <div id="visit-list" class="card-list"></div>
+    </div>
+  </section>
+
+  <nav id="tab-bar" class="tab-bar" aria-label="주요 메뉴">
+    <button id="tab-home" type="button">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9H3z"/><path d="M9 20v-6h6v6"/></svg>홈
+    </button>
+    <button id="tab-records" type="button">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h7M9 14h7M9 18h4"/></svg>기록
+    </button>
+  </nav>
+
+  <dialog id="settings-dialog" class="sheet">
+    <form id="settings-form" class="stack">
+      <div class="sheet-head">
+        <h2>설정</h2>
+        <button type="button" class="icon-btn" data-close="settings-dialog" aria-label="설정 닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <section class="settings-group">
+        <h3>계정</h3>
+        <div class="account-row">
+          <span id="account-email" class="account-email"></span>
+          <button id="signout" class="btn btn-secondary btn-small" type="button">로그아웃</button>
+        </div>
+        <p id="sync-status" class="meta">서버 연결 중</p>
+      </section>
+      <section class="settings-group">
+        <h3>네이버 지도 연결</h3>
+        <p class="meta">지도와 단지 검색을 연결해요. 검색 비밀키는 내 계정 전용 서버 저장소에만 보관돼요.</p>
+        <div class="field">
+          <label for="map-key">Maps Key ID</label>
+          <input id="map-key" autocomplete="off" placeholder="네이버 클라우드 Maps의 Key ID">
+          <p class="field-help">Web Dynamic Map을 켜고, 웹 서비스 URL에 <code id="site-origin"></code>을 등록해 주세요.</p>
+        </div>
+        <div class="field">
+          <label for="search-id">검색 Client ID</label>
+          <input id="search-id" autocomplete="off" placeholder="NAVER API HUB 지역 검색">
+        </div>
+        <div class="field">
+          <label for="search-secret">검색 Client Secret</label>
+          <input id="search-secret" type="password" autocomplete="new-password" placeholder="바꿀 때만 입력">
+          <p class="field-help" id="secret-status"></p>
+        </div>
+        <a class="setup-link" href="https://console.ncloud.com/" target="_blank" rel="noopener">네이버 클라우드 콘솔 열기</a>
+      </section>
+      <button class="btn btn-primary btn-block" type="submit">연결 설정 저장</button>
+    </form>
+  </dialog>
+
+  <dialog id="name-dialog" class="sheet">
+    <form id="name-form" class="stack">
+      <div class="sheet-head">
+        <h2 id="name-title">동 추가</h2>
+        <button class="icon-btn" type="button" data-close="name-dialog" aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="field">
+        <label for="building-name">동 이름</label>
+        <input id="building-name" placeholder="101동" maxlength="40" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">저장</button>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="confirm">
+    <h2 id="confirm-title">삭제할까요?</h2>
+    <p id="confirm-message"></p>
+    <div class="confirm-actions">
+      <button id="confirm-no" class="btn btn-secondary" type="button">취소</button>
+      <button id="confirm-yes" class="btn btn-primary" type="button">삭제</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+</div>
+<script src="/auth.js" defer></script>
+<script src="/photos.js" defer></script>
+<script src="/app.js" defer></script>
+</body>
+</html>
