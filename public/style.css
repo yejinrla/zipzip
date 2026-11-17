@@ -155,3 +155,6 @@ body.tab-view .home-page{min-height:calc(100dvh - 122px - env(safe-area-inset-bo
 body.tab-view main,body.tab-view #detail-page{min-height:calc(100dvh - 122px - env(safe-area-inset-bottom))}
 body.tab-view #detail-page .map-section{height:calc(100dvh - 303px - env(safe-area-inset-bottom));min-height:380px}
 body.tab-view .map-bottom{bottom:16px}
+#visit-date{cursor:pointer}
+#visit-date::-webkit-calendar-picker-indicator{display:none}
+#visit-form[hidden]+#visit-list>.visit:first-child{border-top:0;margin-top:0;padding-top:8px}
