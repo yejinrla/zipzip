@@ -1,3 +1,4 @@
+import {loadBuildingData} from './building-data.js';
 const json=(data,status=200)=>Response.json(data,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 const fail=(message,status=400)=>{throw Object.assign(new Error(message),{status});};
 const str=(v,max)=>typeof v==='string'&&v.length<=max;
@@ -27,6 +28,13 @@ export async function handleApi(request,env){try{
  if(method==='GET')return json({state:old?await old.json():{complexes:[]},revision:old?.etag||null});
  if(method==='PUT'){const {state,revision}=await limitedJson(request);validate(state);if((old?.etag||null)!==revision)return json({error:'다른 화면에서 기록이 변경됐어요. 내용을 복사한 뒤 새로고침해 주세요.'},409);
  const saved=await env.BUCKET.put(key,JSON.stringify(state),{onlyIf:revision?{etagMatches:revision}:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});if(!saved)return json({error:'다른 화면에서 변경됐어요. 새로고침 후 다시 시도해 주세요.'},409);return json({revision:saved.etag});}
+ }
+ if(p==='/api/buildings'&&method==='GET'){
+ const saved=await env.BUCKET.get(owner+'/state'),state=saved?await saved.json():{complexes:[]};
+ const c=state.complexes.find(c=>c.id===url.searchParams.get('complex'));
+ if(!c)return json({error:'단지를 찾을 수 없습니다.'},404);
+ if(!env.VWORLD_API_KEY)return json({error:'자동 동 조회를 연결하려면 브이월드 인증키 설정이 필요해요.'},503);
+ try{return json({items:await loadBuildingData(c,env),source:'행정안전부 도로명주소 건물 · 브이월드'});}catch{return json({error:'건물 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.'},502);}
  }
  if(p==='/api/search'&&method==='GET'){
  const q=url.searchParams.get('q')?.trim();if(!q||q.length>100)fail('검색어를 1~100자로 입력해 주세요.');const s=await settings(env,owner),clientId=s.searchId||env.NAVER_SEARCH_ID,secret=s.searchSecret||env.NAVER_SEARCH_SECRET;if(!clientId||!secret)return json({error:'설정에서 네이버 지역 검색 Client ID와 Client Secret을 연결해 주세요.'},503);

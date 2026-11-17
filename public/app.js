@@ -1,6 +1,7 @@
 'use strict';
 const $=s=>document.querySelector(s),make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;};
 let state={complexes:[]},revision=null,selectedComplex=null,selectedBuilding=null,recordPage=false,map=null,markers=[],demo=false,realSnapshot=null,pendingPoint=null,nameMode='add',placement=null,editing=null,draftPhotos=[],dirty=false,busy=false,settings={},saveQueue=Promise.resolve(),mapLoading=false,initializing=true;
+let footprintLayers=[],footprintCache=new Map(),footprintRequest=0;
 const today=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Seoul'});
 const uid=()=>crypto.randomUUID();const complex=()=>state.complexes.find(x=>x.id===selectedComplex);const building=()=>complex()?.buildings.find(x=>x.id===selectedBuilding);
 const toast=msg=>{$('#toast').textContent=msg;$('#toast').hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('#toast').hidden=true,5500);};
@@ -15,7 +16,41 @@ function renderPage(){const detail=!!complex(),record=detail&&recordPage&&!!buil
 function restorePageFromUrl(){const params=new URLSearchParams(location.search),id=params.get('complex'),bid=params.get('building');selectedComplex=state.complexes.some(c=>c.id===id)?id:null;selectedBuilding=complex()?.buildings.some(b=>b.id===bid)?bid:null;recordPage=!!selectedBuilding;placement=null;if((id&&!selectedComplex)||(bid&&!selectedBuilding))writePageUrl(selectedComplex,true);render();}
 function detailMapSize(){const box=$('.map-section');return new naver.maps.Size(box.clientWidth,box.clientHeight);}
 function resizeDetailMap(){if(!map)return;const size=detailMapSize();if(size.width>0&&size.height>0)map.setSize(size);}
-async function prepareDetailMap(){if(!complex()||recordPage)return;if(!map&&settings.mapKey)await loadMap(settings.mapKey);if(map&&complex()){resizeDetailMap();map.setCenter(new naver.maps.LatLng(complex().lat,complex().lng));map.setZoom(17);}}
+async function prepareDetailMap(){if(!complex()||recordPage)return;if(!map&&settings.mapKey)await loadMap(settings.mapKey);if(map&&complex()){resizeDetailMap();map.setCenter(new naver.maps.LatLng(complex().lat,complex().lng));map.setZoom(17);void loadFootprints();}}
+function footprintKey(c){return [c.id,c.name,c.lat,c.lng].join('|');}
+async function loadFootprints(force=false){
+ const c=complex();if(!c||demo||!map||recordPage)return;
+ const key=footprintKey(c),status=$('#building-status'),version=++footprintRequest;
+ if(force)footprintCache.delete(key);
+ if(footprintCache.has(key)){renderFootprints();return;}
+ status.hidden=false;status.textContent='단지의 동 정보를 불러오는 중…';$('#retry-buildings').hidden=true;
+ try{const result=await api('buildings?complex='+encodeURIComponent(c.id));
+ if(version!==footprintRequest||selectedComplex!==c.id||demo||recordPage)return;
+ footprintCache.set(key,result.items);renderFootprints();
+ }catch(e){if(version!==footprintRequest||selectedComplex!==c.id||demo||recordPage)return;status.textContent=e.message;$('#retry-buildings').hidden=false;}
+}
+function renderFootprints(){
+ for(const layer of footprintLayers)layer.setMap(null);footprintLayers=[];
+ const c=complex();if(!c||!map||demo||recordPage)return;
+ const items=footprintCache.get(footprintKey(c));if(!items)return;
+ $('#building-status').hidden=false;$('#building-status').textContent=items.length?'동을 눌러 기록을 추가하세요 · 출처: 행정안전부 / 브이월드':'이 단지와 이름이 일치하는 동 데이터가 없어요. ＋ 동 추가로 직접 기록할 수 있어요.';
+ $('#retry-buildings').hidden=true;
+ for(const item of items){
+ const saved=c.buildings.find(b=>b.id===item.id||b.name.trim()===item.name.trim());
+ const polygon=new naver.maps.Polygon({map,paths:item.paths.map(r=>r.map(([lng,lat])=>new naver.maps.LatLng(lat,lng))),fillColor:saved?.visits.length?'#285e50':'#7ca88c',fillOpacity:.24,strokeColor:'#285e50',strokeWeight:2,clickable:true,zIndex:10});
+ naver.maps.Event.addListener(polygon,'click',e=>{if(placement){if(e.coord)pointClicked(e.coord.lat(),e.coord.lng());}else void requestAutomaticBuilding(item);});footprintLayers.push(polygon);
+ if(!saved){const button=make('button','marker',item.name);button.onclick=e=>{e.stopPropagation();if(!placement)void requestAutomaticBuilding(item);};footprintLayers.push(new naver.maps.Marker({map,position:new naver.maps.LatLng(item.lat,item.lng),icon:{content:button,anchor:new naver.maps.Point(28,15)},zIndex:20}));}
+ }
+}
+async function requestAutomaticBuilding(item){
+ const c=complex();if(!c||!canLeave())return;
+ const existing=c.buildings.find(b=>b.id===item.id||b.name.trim()===item.name.trim());
+ if(existing){await requestBuildingRecord(existing.id);return;}
+ const proceed=await confirmAction(item.name+'에 기록을 추가할까요?',c.name+' '+item.name+'의 임장 기록 추가 페이지로 이동합니다.','진행');
+ if(!proceed||selectedComplex!==c.id||!canLeave())return;
+ if(await change(s=>s.complexes.find(x=>x.id===c.id).buildings.push({id:item.id,name:item.name,lat:item.lat,lng:item.lng,visits:[]})))selectBuilding(item.id);
+}
+$('#retry-buildings').onclick=()=>void loadFootprints(true);
 function goHome({replace=false}={}){if(!canLeave())return;clearDraft();closeSuggestions();selectedComplex=null;selectedBuilding=null;recordPage=false;placement=null;$('#query').value='';writePageUrl(null,replace);render();$('#home-page').scrollIntoView({block:'start'});$('#query').focus();}
 function selectComplex(id){if(!state.complexes.some(c=>c.id===id)||!canLeave())return;clearDraft();selectedComplex=id;selectedBuilding=null;recordPage=false;placement=null;writePageUrl(id);render();void prepareDetailMap();$('#detail-page').scrollIntoView({behavior:'smooth',block:'start'});}
 
@@ -33,7 +68,7 @@ function renderPanel(){window.zipzipPhotos?.reset();const b=building();$('#recor
  for(const v of [...b.visits].sort((a,b)=>b.date.localeCompare(a.date))){const item=make('article','visit'),head=make('div','visit-header'),actions=make('div');head.append(make('span','visit-date',v.date.replaceAll('-','.')));const edit=make('button','','수정'),del=make('button','','삭제');edit.onclick=()=>{if(!canLeave())return;clearDraft();editing=v.id;$('#visit-date').value=v.date;$('#memo').value=v.memo;draftPhotos=v.photos.map(id=>({id,url:photoUrl(id)}));$('#save-visit').textContent='수정 내용 저장 ↗';$('#cancel-edit').hidden=false;renderDraftPhotos();$('#visit-form').scrollIntoView({behavior:'smooth',block:'nearest'});};del.onclick=async()=>{if(await confirmAction('기록을 삭제할까요?',`${v.date} 방문 기록이 삭제됩니다.`)){if(await change(s=>s.complexes.find(c=>c.id===selectedComplex).buildings.find(x=>x.id===b.id).visits=s.complexes.find(c=>c.id===selectedComplex).buildings.find(x=>x.id===b.id).visits.filter(x=>x.id!==v.id))){if(editing===v.id)clearDraft();toast('기록을 삭제했어요.');}}};actions.append(edit,del);head.append(actions);item.append(head,make('p','',v.memo||'사진으로 남긴 임장 기록'));if(v.photos.length){const photos=make('div','photo-grid');for(const p of v.photos){const a=make('a');a.target='_blank';a.rel='noopener';const img=make('img','visit-photo');window.zipzipPhotos.attach(img,p,a);img.alt=b.name+' 임장 사진';img.loading='lazy';a.append(img);photos.append(a);}item.append(photos);}list.append(item);}renderDraftPhotos();}
 function renderDraftPhotos(){const root=$('#photo-preview');root.replaceChildren();draftPhotos.forEach((p,i)=>{const item=make('div','photo-item'),img=make('img');if(p.file||p.url.startsWith('blob:'))img.src=p.url;else if(p.id)window.zipzipPhotos.attach(img,p.id);img.alt='첨부 사진 '+(i+1);const del=make('button','','×');del.type='button';del.setAttribute('aria-label','첨부 사진 삭제');del.onclick=()=>{if(p.file)URL.revokeObjectURL(p.url);draftPhotos.splice(i,1);dirty=true;renderDraftPhotos();};item.append(img,del);root.append(item);});}
 function markerButton(b){const btn=make('button','marker'+(b.visits.length?' has-record':'')+(b.id===selectedBuilding?' selected':''),b.name);btn.setAttribute('aria-label',`${b.name}, 임장 기록 ${b.visits.length}개`);if(b.visits.length)btn.append(make('small','',String(b.visits.length)));btn.onclick=async e=>{e.stopPropagation();await requestBuildingRecord(b.id);};return btn;}
-function renderMarkers(){for(const m of markers)m.setMap(null);markers=[];$('#schematic').querySelectorAll('.sample-marker').forEach(x=>x.remove());const c=complex();if(!c)return;if(demo){c.buildings.forEach((b,i)=>{const el=make('div','sample-marker');el.style.left=(b.sampleX||25+i*16)+'%';el.style.top=(b.sampleY||35+i%2*25)+'%';el.append(markerButton(b));$('#schematic').append(el);});return;}if(!map)return;for(const b of c.buildings){const btn=markerButton(b);markers.push(new naver.maps.Marker({position:new naver.maps.LatLng(b.lat,b.lng),map,icon:{content:btn,anchor:new naver.maps.Point(28,15)}}));}}
+function renderMarkers(){renderFootprints();for(const m of markers)m.setMap(null);markers=[];$('#schematic').querySelectorAll('.sample-marker').forEach(x=>x.remove());const c=complex();if(!c)return;if(demo){c.buildings.forEach((b,i)=>{const el=make('div','sample-marker');el.style.left=(b.sampleX||25+i*16)+'%';el.style.top=(b.sampleY||35+i%2*25)+'%';el.append(markerButton(b));$('#schematic').append(el);});return;}if(!map)return;for(const b of c.buildings){const btn=markerButton(b);markers.push(new naver.maps.Marker({position:new naver.maps.LatLng(b.lat,b.lng),map,icon:{content:btn,anchor:new naver.maps.Point(28,15)}}));}}
 async function loadMap(key){if(!key){$('#map-placeholder').hidden=false;return;}if(mapLoading)return;mapLoading=true;$('#map-loading').hidden=false;$('#connect-card').hidden=true;try{if(!window.naver?.maps){await new Promise((resolve,reject)=>{window.navermap_authFailure=()=>reject(new Error('네이버 지도 인증에 실패했어요. Maps Key ID와 등록 URL을 확인해 주세요.'));const script=document.createElement('script');const timer=setTimeout(()=>reject(new Error('지도를 불러오지 못했어요. 연결 상태와 API 설정을 확인해 주세요.')),15000);script.src='https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId='+encodeURIComponent(key);script.onload=()=>{clearTimeout(timer);window.naver?.maps?resolve():reject(new Error('네이버 지도 연결 설정을 확인해 주세요.'));};script.onerror=()=>{clearTimeout(timer);script.remove();reject(new Error('네이버 지도 스크립트를 불러오지 못했어요.'));};document.head.append(script);});}
  if(!map){map=new naver.maps.Map($('#map'),{size:detailMapSize(),center:new naver.maps.LatLng(complex()?.lat||37.515,complex()?.lng||127.05),zoom:16,zoomControl:false,mapDataControl:true});naver.maps.Event.addListener(map,'click',e=>pointClicked(e.coord.lat(),e.coord.lng()));}$('#map-placeholder').hidden=true;render();}catch(e){toast(e.message);$('#map-placeholder').hidden=false;$('#connect-card').hidden=false;}finally{mapLoading=false;$('#map-loading').hidden=true;}}
 function pointClicked(lat,lng){if(!placement)return;if(placement==='move'){const b=building();if(!b)return;change(s=>Object.assign(s.complexes.find(c=>c.id===selectedComplex).buildings.find(x=>x.id===b.id),{lat,lng})).then(ok=>{if(ok){placement=null;render();toast('동 위치를 수정했어요.');}});return;}pendingPoint={lat,lng};nameMode='add';$('#building-name').value='';$('#name-title').textContent='동 추가';$('#name-dialog').showModal();}
