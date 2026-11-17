@@ -1,6 +1,7 @@
-import{readFile,mkdir,writeFile,copyFile}from'node:fs/promises';
-await mkdir('dist/server',{recursive:true});await mkdir('dist/.openai',{recursive:true});
-let api=await readFile('src/api.js','utf8');api=api.replace('export async function handleApi','async function handleApi');
-const assets={};for(const [path,file,type]of[['/','index.html','text/html; charset=utf-8'],['/app.js','app.js','text/javascript; charset=utf-8'],['/style.css','style.css','text/css; charset=utf-8']])assets[path]={body:await readFile('public/'+file,'utf8'),type};
-const worker=api+'\nconst assets='+JSON.stringify(assets)+';\nexport default {async fetch(request,env){const p=new URL(request.url).pathname;if(p.startsWith("/api/"))return handleApi(request,env);const a=assets[p];if(!a)return new Response("Not found",{status:404});return new Response(a.body,{headers:{"content-type":a.type,"cache-control":"no-cache","x-content-type-options":"nosniff","referrer-policy":"strict-origin-when-cross-origin","permissions-policy":"geolocation=(self)","content-security-policy":"default-src \'self\'; script-src \'self\' https://*.map.naver.com https://*.pstatic.net; style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src \'self\' blob: data: https://*.pstatic.net https://*.naver.com https://*.naver.net; connect-src \'self\' https://*.naver.com https://*.naver.net; object-src \'none\'; base-uri \'self\'; form-action \'self\'"}})}};\n';
-await writeFile('dist/server/index.js',worker);await copyFile('.openai/hosting.json','dist/.openai/hosting.json');console.log('Built Worker with embedded HTML, JS and CSS');
+import{mkdir,copyFile,rm}from'node:fs/promises';
+import{build}from'esbuild';
+await rm('dist',{recursive:true,force:true});await mkdir('dist',{recursive:true});
+for(const file of ['index.html','style.css','app.js'])await copyFile('public/'+file,'dist/'+file);
+await build({entryPoints:['public/auth.js'],bundle:true,minify:true,format:'iife',platform:'browser',target:['es2022'],outfile:'dist/auth.js'});
+await build({entryPoints:['public/photos.js'],bundle:true,minify:true,format:'iife',platform:'browser',target:['es2022'],outfile:'dist/photos.js'});
+console.log('Built static frontend for Vercel. API runs as a Node function.');

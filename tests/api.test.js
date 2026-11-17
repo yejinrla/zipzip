@@ -1,6 +1,8 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {handleApi} from '../src/api.js';
+import {handleApi as coreApi} from '../src/api.js';
+// Test-only verified identity injection. Production never trusts this header.
+const handleApi=(r,e)=>coreApi(r,{...e,userId:r.headers.get('oai-authenticated-user-id')});
 class Bucket {data=new Map(); async get(k){let x=this.data.get(k);return x?{etag:x.etag,json:async()=>JSON.parse(x.body),body:x.body,httpMetadata:{contentType:x.type}}:null;}async put(k,body,o={}){const old=this.data.get(k);if(o.onlyIf?.etagMatches&&old?.etag!==o.onlyIf.etagMatches)return null;if(o.onlyIf?.etagDoesNotMatch==='*'&&old)return null;const etag=crypto.randomUUID();this.data.set(k,{body,etag,type:o.httpMetadata?.contentType});return{etag};}async delete(k){this.data.delete(k);}}
 const env=()=>({BUCKET:new Bucket()});
 const req=(path,method='GET',data,user='alice',extra={})=>new Request('https://example.test/api/'+path,{method,headers:{...(user?{'oai-authenticated-user-id':user}:{}),...(data?{'content-type':'application/json'}:{}),...extra},body:data?JSON.stringify(data):undefined});
