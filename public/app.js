@@ -42,14 +42,14 @@ async function loadFootprints(force=false){
  status.hidden=false;status.textContent='단지의 동 정보를 불러오는 중…';$('#retry-buildings').hidden=true;
  try{const result=await api('buildings?complex='+encodeURIComponent(c.id));
  if(version!==footprintRequest||selectedComplex!==c.id||demo||recordPage)return;
- footprintCache.set(key,result.items);renderFootprints();
+ footprintCache.set(key,{items:result.items||[],candidates:result.candidates||[]});renderFootprints();
  }catch(e){if(version!==footprintRequest||selectedComplex!==c.id||demo||recordPage)return;status.textContent=e.message;$('#retry-buildings').hidden=false;}
 }
 function renderFootprints(){
  for(const layer of footprintLayers)layer.setMap(null);footprintLayers=[];
  const c=complex();if(!c||!map||demo||recordPage)return;
- const items=footprintCache.get(footprintKey(c));if(!items)return;
- $('#building-status').hidden=false;$('#building-status').textContent=items.length?'동을 눌러 기록을 추가하세요 · 출처: 행정안전부 / 브이월드':'이 단지와 이름이 일치하는 동 데이터가 없어요. ＋ 기록 추가로 직접 기록할 수 있어요.';
+ const cached=footprintCache.get(footprintKey(c));if(!cached)return;const items=cached.items;
+ $('#building-status').hidden=false;$('#building-status').textContent=items.length?'동을 눌러 기록을 추가하세요 · 출처: 행정안전부 / 브이월드':(cached.candidates.length?'이 단지 이름과 일치하는 동을 찾지 못했어요. 주변 건물: '+cached.candidates.join(', ')+'. ':'이 단지 주변에서 동 데이터를 찾지 못했어요. ')+'＋ 기록 추가로 직접 기록할 수 있어요.';
  $('#retry-buildings').hidden=true;
  for(const item of items){
  const saved=c.buildings.find(b=>b.id===item.id||b.name.trim()===item.name.trim());
