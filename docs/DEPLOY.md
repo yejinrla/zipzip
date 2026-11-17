@@ -26,7 +26,7 @@
 | `NAVER_SEARCH_ID` | 지역 검색 Client ID | 네이버 클라우드 NAVER API HUB |
 | `NAVER_SEARCH_SECRET` | 지역 검색 Client Secret | 네이버 클라우드 NAVER API HUB |
 
-Supabase 두 값은 필수입니다. 네이버 값은 지도·검색을 쓰려면 필요합니다. 환경변수를 바꾼 뒤 Redeploy하세요. GitHub Import를 마치면 연결된 브랜치의 푸시가 Vercel 배포를 트리거합니다.
+API 함수는 `vercel.json`의 `regions`로 서울(`icn1`)에서 실행됩니다. 브이월드 API는 국내 서버에서 호출해야 하며, Supabase 프로젝트도 서울 리전이면 지연이 가장 적습니다. Supabase 두 값은 필수입니다. 네이버 값은 지도·검색을 쓰려면 필요합니다. 환경변수를 바꾼 뒤 Redeploy하세요. GitHub Import를 마치면 연결된 브랜치의 푸시가 Vercel 배포를 트리거합니다.
 
 ## 3. 로그인 이메일과 URL
 1. 배포 주소가 생기면 Supabase Authentication → URL Configuration의 Site URL을 `https://실제서비스주소`로 지정합니다.
