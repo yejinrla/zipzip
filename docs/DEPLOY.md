@@ -21,8 +21,8 @@
 | `SUPABASE_URL` | Supabase Project URL | Project Settings → API |
 | `SUPABASE_ANON_KEY` | anon/publishable key | Project Settings → API |
 | `NAVER_MAP_KEY` | 신규 Maps Web Dynamic Map Key ID | 네이버 클라우드 |
-| `NAVER_SEARCH_ID` | 지역 검색 Client ID | 네이버 개발자센터 |
-| `NAVER_SEARCH_SECRET` | 지역 검색 Client Secret | 네이버 개발자센터 |
+| `NAVER_SEARCH_ID` | 지역 검색 Client ID | 네이버 클라우드 NAVER API HUB |
+| `NAVER_SEARCH_SECRET` | 지역 검색 Client Secret | 네이버 클라우드 NAVER API HUB |
 
 Supabase 두 값은 필수입니다. 네이버 값은 지도·검색을 쓰려면 필요합니다. 환경변수를 바꾼 뒤 Redeploy하세요. GitHub Import를 마치면 연결된 브랜치의 푸시가 Vercel 배포를 트리거합니다.
 
@@ -34,7 +34,7 @@ Supabase 두 값은 필수입니다. 네이버 값은 지도·검색을 쓰려�
 5. 회원가입 → 인증 메일 → 로그인, 비밀번호 찾기 → 메일 링크 → 새 비밀번호 저장 → 재로그인을 실제 메일로 확인합니다.
 
 ## 4. 네이버 지도
-신규 네이버 클라우드 Maps 서비스의 **Web Dynamic Map**을 사용합니다. 웹 서비스 URL에 실제 Vercel 도메인과 로컬 origin을 등록합니다. 네이버 개발자센터의 검색 API는 별도 인증 정보입니다. 공통 키를 Vercel 환경변수에 두면 일반 사용자는 지도 연결 설정 없이 이용할 수 있습니다.
+신규 네이버 클라우드 Maps 서비스의 **Web Dynamic Map**을 사용합니다. 웹 서비스 URL에 실제 Vercel 도메인과 로컬 origin을 등록합니다. 네이버 클라우드 NAVER API HUB의 지역 검색 API는 Maps와 별도 인증 정보입니다. NAVER API HUB의 NAVER 검색 → 지역을 활성화하고 해당 앱의 Client ID/Secret을 사용합니다. 공통 키를 Vercel 환경변수에 두면 일반 사용자는 지도 연결 설정 없이 이용할 수 있습니다.
 
 ## 5. 공개 전 확인
 - A/B 두 계정으로 같은 단지를 각각 등록하고 메모와 사진이 섞이지 않는지 확인합니다.

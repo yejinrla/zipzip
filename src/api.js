@@ -30,8 +30,8 @@ export async function handleApi(request,env){try{
  }
  if(p==='/api/search'&&method==='GET'){
  const q=url.searchParams.get('q')?.trim();if(!q||q.length>100)fail('검색어를 1~100자로 입력해 주세요.');const s=await settings(env,owner),clientId=s.searchId||env.NAVER_SEARCH_ID,secret=s.searchSecret||env.NAVER_SEARCH_SECRET;if(!clientId||!secret)return json({error:'설정에서 네이버 지역 검색 Client ID와 Client Secret을 연결해 주세요.'},503);
- const target=new URL('https://openapi.naver.com/v1/search/local.json');target.search=new URLSearchParams({query:q,display:'5',sort:'random'});let res;try{res=await fetch(target,{headers:{'X-Naver-Client-Id':clientId,'X-Naver-Client-Secret':secret},signal:AbortSignal.timeout(10000)});}catch{return json({error:'검색 서비스 연결이 지연되고 있어요. 다시 시도해 주세요.'},502);}if(!res.ok)return json({error:'네이버 검색 요청을 처리하지 못했어요. API 키와 사용량을 확인해 주세요.'},502);
- const data=await res.json();return json({items:(data.items||[]).map(x=>({name:x.title.replace(/<[^>]*>/g,''),address:x.roadAddress||x.address,lat:Number(x.mapy)/1e7,lng:Number(x.mapx)/1e7})).filter(coord)});
+ const target=new URL('https://naverapihub.apigw.ntruss.com/search/v1/local');target.search=new URLSearchParams({query:q,display:'5',sort:'random',format:'json'});let res;try{res=await (env.fetch||fetch)(target,{headers:{'X-NCP-APIGW-API-KEY-ID':clientId,'X-NCP-APIGW-API-KEY':secret},signal:AbortSignal.timeout(10000)});}catch{return json({error:'검색 서비스 연결이 지연되고 있어요. 다시 시도해 주세요.'},502);}if(!res.ok)return json({error:'네이버 검색 요청을 처리하지 못했어요. API 키와 사용량을 확인해 주세요.'},502);
+ const data=await res.json();return json({items:(data.items||[]).map(x=>({name:x.title.replace(/<[^>]*>/g,''),address:x.roadAddress||x.address,lat:Math.abs(Number(x.mapy))>90?Number(x.mapy)/1e7:Number(x.mapy),lng:Math.abs(Number(x.mapx))>180?Number(x.mapx)/1e7:Number(x.mapx)})).filter(coord)});
  }
  if(p==='/api/photos'&&method==='POST'){
  const type=request.headers.get('content-type')?.split(';')[0];if(!['image/jpeg','image/png','image/webp'].includes(type))fail('JPG, PNG, WebP 사진을 선택해 주세요.');
