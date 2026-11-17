@@ -158,3 +158,8 @@ body.tab-view .map-bottom{bottom:16px}
 #visit-date{cursor:pointer}
 #visit-date::-webkit-calendar-picker-indicator{display:none}
 #visit-form[hidden]+#visit-list>.visit:first-child{border-top:0;margin-top:0;padding-top:8px}
+.records-back{display:block;margin:-8px 0 8px -6px;font-size:13px;color:var(--muted)}
+.records-sub{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.records-head>div{min-width:0}
+.records-map{display:block;margin:-8px 0 10px -6px;font-size:13px;color:var(--green)}
+.record-card-meta{margin:10px 0 0;font-size:12px;color:#66755d}
