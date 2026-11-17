@@ -156,7 +156,6 @@ body.tab-view #detail-page .map-section{height:calc(100dvh - 303px - env(safe-ar
 body.tab-view .map-bottom{bottom:16px}
 #visit-date{cursor:pointer}
 #visit-date::-webkit-calendar-picker-indicator{display:none}
-#visit-form[hidden]+#visit-list>.visit:first-child{border-top:0;margin-top:0;padding-top:8px}
 .records-back{display:block;margin:-8px 0 8px -6px;font-size:13px;color:var(--muted)}
 .records-sub{margin:4px 0 0;font-size:12px;color:var(--muted)}
 .records-head>div{min-width:0}
@@ -166,3 +165,27 @@ body.tab-view .map-bottom{bottom:16px}
 #map-heading,.map-legend{display:none!important}
 .map-bottom .add-button{margin-left:auto}
 #record-page .panel-top{display:none}
+#building-title h2{font-size:26px;letter-spacing:-.5px;font-weight:700;margin:4px 0 4px}
+#building-title p{font-size:13px;color:var(--muted)}
+.building-actions{gap:4px;margin:10px 0 20px 0}
+.building-actions .text-button{min-height:32px;padding:0 10px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;background:#fff}
+.building-actions .text-button.danger{color:#b0624f}
+.record-tabs{border-bottom:0;padding-bottom:0;margin-bottom:4px}
+.record-tabs strong{font-size:15px;font-weight:700}
+.record-tabs strong span{color:var(--green)}
+#new-visit{min-height:36px;padding:0 14px;border:1px solid var(--green);border-radius:999px;color:var(--green);font-size:13px;font-weight:600}
+.visit{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;margin-top:12px}
+.visit-header{gap:10px}
+.visit-when{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
+.visit .visit-date{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:0}
+.visit-unit{padding:3px 10px;border-radius:999px;background:var(--mint);color:var(--dark);font-size:12px;font-weight:600}
+.visit-actions{display:flex;flex:none}
+.visit .visit-header button{font-size:12px;color:var(--muted);min-height:36px;padding:0 8px}
+.visit-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 0}
+.visit-details div{display:block;padding:10px 12px;border-radius:10px;background:var(--paper);border:1px solid #eef1ea}
+.visit-details div.wide{grid-column:1/-1;width:auto;margin-top:0}
+.visit-details dt{font-size:11px;color:var(--muted);margin-bottom:3px}
+.visit-details dd{margin:0;font-size:14px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.visit-memo-label{display:block;margin:16px 0 6px;font-size:11px;color:var(--muted)}
+.visit p.visit-memo{margin:0;font-size:14px;line-height:1.75;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
+.visit .photo-grid{margin-top:12px}
