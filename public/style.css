@@ -47,3 +47,8 @@ dialog{width:min(448px,calc(100% - 32px));padding:24px;max-height:85dvh}
 .auth-gate{width:100%;padding:24px 20px}
 .auth-card{max-width:400px;padding:28px 24px}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+#complex-list-title{color:var(--ink);padding-left:0;font:inherit}
+.complex-list.has-selection{display:block;max-height:none;overflow:visible;scroll-margin-top:16px}
+.complex-list.has-selection .complex-card{width:100%;min-width:0;margin-bottom:0;cursor:default}
+.complex-list.has-selection .complex-tools{justify-content:flex-end;margin:0 0 6px}
