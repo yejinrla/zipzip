@@ -118,3 +118,13 @@ body:not(.home-view) header{gap:2px}
 .recent-open:hover,.recent-open:focus-visible,.recent-remove:hover,.recent-remove:focus-visible{background:var(--mint);outline-offset:-3px}
 .recent-remove{flex:none;width:44px;min-height:56px;font-size:18px;color:var(--muted)}
 .record-dong-row{display:contents}
+.detail-group{margin:16px 0 0}
+.detail-label{display:block;margin-bottom:8px;font-size:11px;color:#6d7f65;font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:0 14px;border:1px solid #e1e6da;border-radius:999px;background:#fff;font-size:13px;color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
+#mold-note{line-height:1.6}
+.visit-details{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:12px 0 0;font-size:12px}
+.visit-details div{display:contents}
+.visit-details dt{color:#8f9a86}
+.visit-details dd{margin:0;color:var(--ink);overflow-wrap:anywhere}

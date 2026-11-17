@@ -6,6 +6,7 @@
 1. Supabase 대시보드에서 새 프로젝트를 만들고 가까운 리전을 선택합니다.
 2. SQL Editor에서 `supabase/migrations/202611170001_private_journal.sql` 전체를 한 번 실행합니다. 또는 Supabase CLI로 프로젝트를 연결한 뒤 `supabase db push`를 실행합니다. 같은 초기 SQL을 중복 실행하지 마세요.
    이후 추가된 마이그레이션도 파일 이름 순서대로 한 번씩 실행합니다. `202611170002_recent_complexes.sql`은 기기 간에 공유되는 **최근 검색한 아파트** 목록 테이블을 만듭니다. 이 SQL을 실행하기 전에도 앱은 동작하지만 최근 검색 목록은 저장되지 않습니다.
+   `202611170003_visit_details.sql`은 방문 기록에 호수·수리·확장·조망·뷰·위아래 소음·결로/곰팡이 항목을 저장하는 `details` 컬럼을 추가합니다. **이 SQL을 먼저 실행한 뒤 앱을 배포하세요.** 이전 함수는 이 항목들을 저장하지 않고 버립니다.
 3. Table Editor에서 `complexes`, `buildings`, `visits`, `journal_versions`, `user_settings`, `recent_complexes` 테이블을 확인합니다. 각 테이블에 RLS가 켜져 있어야 합니다.
 4. Storage에 `journal-photos` 버킷이 생겼는지 확인합니다. **Public을 켜지 마세요.** 사용자 폴더별 접근 정책은 SQL에 포함되어 있습니다.
 5. Project Settings → API에서 Project URL과 **anon key 또는 publishable key**를 확인합니다. `service_role`, `sb_secret_...` 키를 사용하지 마세요. 이 앱에는 관리자 키가 필요 없습니다.
