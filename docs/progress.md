@@ -13,3 +13,7 @@ Task 2: complete — email/password signup, confirmation, logout, recovery UI; t
 Ruling: user has no cloud projects and requested deploy-ready source first. Real Vercel/Supabase resources, email delivery and Naver integration remain unverified until configured. No existing Sites data is automatically migrated.
 Final review: independent reviewer requested lazy bounded photo loading; addressed with regression test. No important access-control finding.
 Deferred minor: removed records leave unreferenced originals in private Storage. Cleanup policy remains documented.
+
+# Mobile-centered layout (2026-11-17)
+User requested one mobile layout with centered presentation on PC. Removed viewport-dependent desktop columns and applied mobile layout universally, with a 480px body cap and neutral outer gutters. Fixed record panel shares the same centered cap, dialogs/toasts stay within the mobile width, input text is 16px and primary tap targets are 44px. Device safe-area bottom padding is included. Complex selection now scrolls to the map on desktop as well.
+Validation: existing 20 tests, build, HTTP smoke and CSS parse (zero warnings) passed. Browser visual review attempted with a disposable unauthenticated local layout fixture; browser tool failed reading requirements, so live visual verification remains incomplete. No product authentication was bypassed or changed.
