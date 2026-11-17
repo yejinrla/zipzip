@@ -10,12 +10,14 @@ export function createUserStorage(env, token, userId, fetcher=fetch) {
  return {
  async get(key){const p=pathFor(key);
   if(p==='state'){const r=await call('/rest/v1/rpc/journal_load',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}),data=await r.json();return data.revision===null?null:{etag:data.revision,json:async()=>data.state};}
+  if(p==='recent'){const r=await call('/rest/v1/recent_complexes?select=ids&user_id=eq.'+encodeURIComponent(userId));const [row]=await r.json();return row?{json:async()=>({ids:row.ids})}:null;}
   if(p==='settings'){const r=await call('/rest/v1/user_settings?select=map_key,search_id,search_secret&user_id=eq.'+encodeURIComponent(userId));const [s]=await r.json();return s?{json:async()=>({mapKey:s.map_key,searchId:s.search_id,searchSecret:s.search_secret})}:null;}
   if(p.startsWith('photos/')){const r=await fetcher(base+'/storage/v1/object/authenticated/journal-photos/'+userId+'/'+encodeURIComponent(p.slice(7)),{headers,signal:AbortSignal.timeout(15000)});if(r.status===404||r.status===400)return null;if(!r.ok)throw new Error('Photo read failed');return{body:r.body,httpMetadata:{contentType:r.headers.get('content-type')}};}
   return null;
  },
  async put(key,body,options={}){const p=pathFor(key);
   if(p==='state'){const r=await call('/rest/v1/rpc/journal_save',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({p_state:JSON.parse(body),p_revision:options.onlyIf?.etagMatches||null})});const result=await r.json();return result.conflict?null:{etag:result.revision};}
+  if(p==='recent'){const {ids}=JSON.parse(body);await call('/rest/v1/recent_complexes?on_conflict=user_id',{method:'POST',headers:{'content-type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({user_id:userId,ids,updated_at:new Date().toISOString()})});return{};}
   if(p==='settings'){const s=JSON.parse(body);await call('/rest/v1/user_settings?on_conflict=user_id',{method:'POST',headers:{'content-type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({user_id:userId,map_key:s.mapKey,search_id:s.searchId,search_secret:s.searchSecret})});return{};}
   if(p.startsWith('photos/')){await call('/storage/v1/object/journal-photos/'+userId+'/'+encodeURIComponent(p.slice(7)),{method:'POST',headers:{'content-type':options.httpMetadata.contentType},body});return{};}
   throw new Error('Unsupported storage path');

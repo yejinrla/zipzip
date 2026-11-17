@@ -23,6 +23,10 @@ export async function handleApi(request,env){try{
  if(method==='GET')return json({mapKey:current.mapKey||env.NAVER_MAP_KEY||'',searchConfigured:!!((current.searchId||env.NAVER_SEARCH_ID)&&(current.searchSecret||env.NAVER_SEARCH_SECRET))});
  if(method==='POST'){const s=await limitedJson(request,10000);if(!str(s.mapKey,200)||!str(s.searchId,200)||!str(s.searchSecret,500))fail('키 형식을 확인해 주세요.');await env.BUCKET.put(owner+'/settings',JSON.stringify({mapKey:s.mapKey.trim(),searchId:s.searchId.trim()||current.searchId||'',searchSecret:s.searchSecret.trim()||current.searchSecret||''}));return json({ok:true});}
  }
+ if(p==='/api/recent'){
+ if(method==='GET'){const o=await env.BUCKET.get(owner+'/recent'),saved=o?await o.json():{};return json({ids:Array.isArray(saved.ids)?saved.ids.filter(id).slice(0,8):[]});}
+ if(method==='PUT'){const {ids}=await limitedJson(request,10000);if(!Array.isArray(ids)||ids.length>8||!ids.every(id)||new Set(ids).size!==ids.length)fail('최근 검색 목록을 확인해 주세요.');await env.BUCKET.put(owner+'/recent',JSON.stringify({ids}));return json({ok:true});}
+ }
  if(p==='/api/state'){
  const key=owner+'/state',old=await env.BUCKET.get(key);
  if(method==='GET')return json({state:old?await old.json():{complexes:[]},revision:old?.etag||null});

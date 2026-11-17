@@ -17,7 +17,7 @@ Node.js 22 이상이 필요합니다.
 npm ci
 cp .env.example .env.local
 # .env.local에 프로젝트의 URL과 anon/publishable key 입력
-# Supabase에 supabase/migrations/202611170001_private_journal.sql 적용
+# Supabase에 supabase/migrations/의 SQL을 파일 이름 순서대로 적용
 npm run dev
 ```
 환경변수가 없으면 연결 준비 화면이 표시됩니다. 로컬에서도 로그인 없이 임의 사용자로 저장하지 않습니다.
