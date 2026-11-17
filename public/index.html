@@ -151,6 +151,7 @@
       </div>
       <div class="map-bottom">
         <p class="map-bottom-hint">건물을 눌러 그 동에 기록하거나, 직접 입력하세요.</p>
+        <button class="btn btn-secondary" id="add-complex-record" type="button">단지 전체 기록</button>
         <button class="btn btn-primary add-button" id="add-building" type="button" disabled>기록 추가</button>
       </div>
       <div class="map-hint" id="map-hint" hidden></div>
@@ -176,7 +177,7 @@
       <form id="visit-form" class="visit-form">
         <fieldset class="form-section">
           <legend>기본</legend>
-          <div class="field-row">
+          <div class="field-row" id="property-location">
             <div id="record-dong-row" class="field" hidden>
               <label for="record-dong">동</label>
               <input id="record-dong" list="record-dong-options" placeholder="101동" maxlength="40" autocomplete="off">
@@ -193,7 +194,7 @@
           </div>
         </fieldset>
 
-        <fieldset class="form-section">
+        <fieldset class="form-section" id="property-deal">
           <legend>거래</legend>
           <div class="field">
             <span class="field-label" id="label-deal">거래 유형</span>
@@ -205,7 +206,7 @@
           </div>
         </fieldset>
 
-        <fieldset class="form-section">
+        <fieldset class="form-section" id="property-condition">
           <legend>집 상태</legend>
           <div class="field">
             <span class="field-label" id="label-renovation">수리</span>
@@ -233,7 +234,7 @@
           </div>
         </fieldset>
 
-        <fieldset class="form-section">
+        <fieldset class="form-section" id="property-living">
           <legend>생활</legend>
           <div class="field">
             <span class="field-label" id="label-noise">위아래 소음</span>
