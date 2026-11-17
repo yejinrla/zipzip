@@ -312,3 +312,8 @@ body.record-view .toast{bottom:calc(96px + var(--safe-b))}
 .dong-filter{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(var(--s3) * -1) var(--s1);padding:0 var(--s3) var(--s1);scrollbar-width:none}
 .dong-filter::-webkit-scrollbar{display:none}
 .dong-filter .chip{flex:none}
+.sort-filter{padding:var(--s2) var(--s3) 0;gap:0}
+.sort-filter .chip{min-height:40px;padding:0 var(--s2);border:0;border-radius:var(--r-s);background:transparent;color:var(--muted);font-size:14px}
+.sort-filter .chip:hover{color:var(--ink);background:var(--tint)}
+.sort-filter .chip[aria-pressed=true]{background:transparent;color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+.sort-filter+.card-list{padding-top:var(--s2)}
