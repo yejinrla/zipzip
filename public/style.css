@@ -309,3 +309,6 @@ body.record-view .toast{bottom:calc(96px + var(--safe-b))}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+.dong-filter{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(var(--s3) * -1) var(--s1);padding:0 var(--s3) var(--s1);scrollbar-width:none}
+.dong-filter::-webkit-scrollbar{display:none}
+.dong-filter .chip{flex:none}
