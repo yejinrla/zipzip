@@ -189,3 +189,4 @@ body.tab-view .map-bottom{bottom:16px}
 .visit-memo-label{display:block;margin:16px 0 6px;font-size:11px;color:var(--muted)}
 .visit p.visit-memo{margin:0;font-size:14px;line-height:1.75;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
 .visit .photo-grid{margin-top:12px}
+.building-actions{display:none!important}
