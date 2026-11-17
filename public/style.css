@@ -71,3 +71,25 @@ dialog{width:min(448px,calc(100% - 32px));padding:24px;max-height:85dvh}
 #search-results .result strong{font-size:14px;line-height:1.5}
 #search-results .result small{font-size:11px;line-height:1.5}
 #search-results .search-error,#search-results .list-empty-note{padding:16px;margin:0;font-size:12px}
+
+.home-page{min-height:calc(100dvh - 64px);padding:32px 24px 24vh;display:flex;flex-direction:column;justify-content:center;gap:32px;background:var(--paper)}
+.home-logo{display:flex;align-items:center;justify-content:center;gap:12px}
+.home-logo .brandmark{width:44px;height:48px;font-size:32px}
+.home-logo h1{font-size:38px;letter-spacing:-2px;margin:0;font-weight:800}
+.home-page .search-wrap{width:100%;margin:0}
+.home-page .search{height:56px;border-radius:12px}
+.home-view header .brand{visibility:hidden}
+#detail-page{min-height:calc(100dvh - 64px)}
+#detail-page .sidebar{padding:18px 18px 12px}
+#detail-page .sidebar-tip,#detail-page .sidebar-footer{display:none}
+#detail-page .complex-list{min-height:0}
+#detail-page .complex-card{padding:18px}
+#detail-page .map-section{height:calc(100dvh - 245px);min-height:420px}
+#change-complex{font-size:11px;white-space:nowrap}
+#detail-back{flex-shrink:0;margin-left:-10px;font-size:22px}
+body:not(.home-view) header .brand{font-size:18px;gap:6px}
+body:not(.home-view) header .brandmark{width:25px;height:28px;font-size:20px}
+body:not(.home-view) header{gap:2px}
+.map-loading{position:absolute;inset:0;margin:0;display:grid;place-items:center;background:#ecf0e5;color:#718267;z-index:1;font-size:12px}
+
+@media(max-width:360px){body:not(.home-view) header .brandmark{display:none}}

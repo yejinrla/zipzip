@@ -16,7 +16,7 @@ $('#auth-form').onsubmit=async e=>{e.preventDefault();if(!client)return;const bu
  if(result.error)throw result.error;
  if(mode==='recover'){message('가입된 이메일이라면 재설정 메일이 발송됩니다. 메일함을 확인해 주세요.');return;}
  if(mode==='signup'&&!result.data.session){message('인증 메일을 확인해 주세요. 메일의 링크를 누른 뒤 로그인할 수 있어요.');return;}
- location.replace(location.origin+'/');
+ location.replace(mode==='update'?location.origin+'/':location.origin+location.pathname+location.search);
  }catch(error){message(error.status===429?'요청이 많아요. 잠시 후 다시 시도해 주세요.':mode==='signin'?'로그인하지 못했어요. 이메일·비밀번호와 메일 인증 여부를 확인해 주세요.':mode==='update'?'비밀번호를 변경하지 못했어요. 새 재설정 메일을 요청해 주세요.':'처리하지 못했어요. 이메일과 비밀번호(8자 이상)를 확인해 주세요.');}finally{button.disabled=false;}};
 $('#auth-signup').onclick=()=>show('signup');$('#auth-signin').onclick=()=>show('signin');$('#auth-recover').onclick=()=>show('recover');$('#signout').onclick=()=>{if(window.confirm('로그아웃할까요? 저장하지 않은 내용은 사라져요.'))window.zipzipAuth.signout();};
 (async()=>{let preparingApp=false;try{const res=await fetch('/api/config');if(!res.ok)throw new Error();const config=await res.json();if(!config.configured){$('#auth-gate').hidden=false;$('#auth-card').hidden=true;$('#setup-card').hidden=false;settle(null);return;}
