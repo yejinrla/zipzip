@@ -193,3 +193,5 @@ body.tab-view .map-bottom{bottom:16px}
 #record-page .record-tabs{margin-top:24px}
 #change-complex{display:none!important}
 .record-tag:first-child{font-weight:600}
+#visit-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+#visit-list>.visit{margin-top:0}
