@@ -117,3 +117,4 @@ body:not(.home-view) header{gap:2px}
 .recent-open small{font-size:11px;line-height:1.4;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .recent-open:hover,.recent-open:focus-visible,.recent-remove:hover,.recent-remove:focus-visible{background:var(--mint);outline-offset:-3px}
 .recent-remove{flex:none;width:44px;min-height:56px;font-size:18px;color:var(--muted)}
+.record-dong-row{display:contents}
