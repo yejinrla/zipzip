@@ -53,7 +53,7 @@ function renderFootprints(){
  $('#retry-buildings').hidden=true;
  for(const item of items){
  const saved=c.buildings.find(b=>b.id===item.id||b.name.trim()===item.name.trim());
- const polygon=new naver.maps.Polygon({map,paths:item.paths.map(r=>r.map(([lng,lat])=>new naver.maps.LatLng(lat,lng))),fillColor:saved?.visits.length?'#285e50':'#7ca88c',fillOpacity:.24,strokeColor:'#285e50',strokeWeight:2,clickable:true,zIndex:10});
+ const polygon=new naver.maps.Polygon({map,paths:item.paths.map(r=>r.map(([lng,lat])=>new naver.maps.LatLng(lat,lng))),fillColor:'#285e50',fillOpacity:.01,strokeOpacity:0,strokeWeight:0,clickable:true,zIndex:10});
  naver.maps.Event.addListener(polygon,'click',e=>{if(placement){if(e.coord)pointClicked(e.coord.lat(),e.coord.lng());}else void requestAutomaticBuilding(item);});footprintLayers.push(polygon);
  
  }
