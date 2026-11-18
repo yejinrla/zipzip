@@ -1,3 +1,7 @@
+# Retired: public read-only sharing
+
+Replaced by member-workspaces.md. journal-share and the old public APIs now return410; public share assets are removed. The rest of this file is historical implementation context.
+
 # Revocable apartment journal sharing
 
 Approved scope: a link holder can read all complex-level and dong/unit records and photos for one apartment without logging in. Only the owner can enable or revoke. No messages are sent automatically and no existing journal is shared until its owner clicks Create link.

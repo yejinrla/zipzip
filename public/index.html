@@ -92,6 +92,7 @@
       <div id="home-recent-list" class="entry-list"></div>
     </section>
 
+<section id="workspace-section" class="home-section" hidden><h2>함께 기록하는 아파트</h2><p id="workspace-status"></p><div id="workspace-list"></div><button id="workspace-refresh" class="btn btn-text btn-small" type="button">목록 새로고침</button></section>
     <section id="recent-section" class="home-section" aria-labelledby="recent-title" hidden>
       <div class="section-head">
         <h2 id="recent-title">다시 볼 단지</h2>
@@ -117,7 +118,7 @@
       <p id="records-count" class="meta"></p>
     </div>
     <button id="records-map" class="btn btn-secondary btn-small records-map" type="button" hidden>단지 지도 보기</button>
-    <button id="share-records" class="btn btn-text btn-small" type="button" hidden>이 아파트 기록 공유</button>
+    <button id="share-records" class="btn btn-text btn-small" type="button" hidden>함께 기록하기</button>
     <div id="records-scope-tabs" class="records-scope-tabs" role="tablist" aria-label="기록 종류" hidden></div>
     <div id="records-sort" class="chips sort-filter" role="group" aria-label="정렬" hidden></div>
     <div id="records-list" class="card-list"></div>
@@ -125,7 +126,7 @@
 
   <main id="detail-page" class="detail-page" hidden>
     <div class="sidebar" id="sidebar">
-      <div id="complex-list" class="complex-list"></div><div class="complex-share-action"><button id="share-complex" class="btn btn-text btn-small" type="button">이 아파트 기록 공유</button></div>
+      <p id="workspace-banner" class="workspace-banner" hidden></p><div id="complex-list" class="complex-list"></div><div class="complex-share-action"><button id="share-complex" class="btn btn-text btn-small" type="button">함께 기록하기</button></div>
     </div>
     <section class="complex-info" aria-labelledby="complex-info-title">
       <h2 id="complex-info-title">단지 기본 정보</h2>
@@ -367,5 +368,4 @@
 <script src="/auth.js" defer></script>
 <script src="/photos.js" defer></script>
 <script src="/app.js" defer></script>
-<dialog id="share-dialog" aria-labelledby="share-title"><div class="dialog-head"><h2 id="share-title">아파트 기록 공유</h2><button id="share-close" class="btn btn-text" type="button" aria-label="공유 설정 닫기">×</button></div><p id="share-description"></p><p>링크를 가진 사람은 로그인 없이 이 아파트의 단지·동·호수 기록과 사진을 볼 수 있어요. 이후 수정한 내용도 반영되며, 공유받은 사람은 수정할 수 없어요.</p><p id="share-status" role="status"></p><label id="share-link-row" hidden>공유 링크<input id="share-link" type="text" readonly></label><div class="share-actions"><button id="share-enable" class="btn btn-primary" type="button">공유 링크 만들기</button><button id="share-copy" class="btn btn-primary" type="button" hidden>링크 복사</button><button id="share-revoke" class="btn btn-secondary" type="button" hidden>공유 끄기</button></div></dialog></body>
-</html>
+<dialog id="share-dialog" aria-labelledby="share-title"><div class="dialog-head"><h2 id="share-title">함께 기록하기</h2><button id="share-close" class="btn btn-text" type="button" aria-label="멤버 관리 닫기">×</button></div><p id="share-description"></p><p>추가한 이메일로 가입·로그인한 회원만 이 아파트의 기록과 사진을 함께 보고, 기록을 추가·수정할 수 있어요. 초대와 내보내기, 기록 삭제는 소유자만 관리해요.</p><p>이메일은 발송되지 않아요. 상대방에게 가입·로그인을 안내해 주세요.</p><label for="share-email">함께 쓸 회원의 이메일</label><input id="share-email" type="email" maxlength="254" autocomplete="off" placeholder="friend@example.com"><div class="share-actions"><button id="share-invite" class="btn btn-primary" type="button">멤버 추가</button></div><p id="share-status" role="status"></p><div id="share-members"></div></dialog></body></html>
