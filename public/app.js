@@ -67,9 +67,10 @@ async function loadComplexBasics(force=false){
  }catch(e){if(version!==basicInfoVersion||selectedComplex!==c.id||recordPage||demo)return;status.textContent=e.message;$('#retry-complex-info').hidden=false;}
 }
 $('#retry-complex-info').onclick=()=>void loadComplexBasics(true);
+$('#complex-info').ontoggle=()=>{if($('#complex-info').open)void loadComplexBasics();};
 function detailMapSize(){const box=$('.map-section');return new naver.maps.Size(box.clientWidth,box.clientHeight);}
 function resizeDetailMap(){if(!map)return;const size=detailMapSize();if(size.width>0&&size.height>0)map.setSize(size);}
-async function prepareDetailMap(){if(!complex()||recordPage)return;void loadComplexBasics();if(!map&&settings.mapKey)await loadMap(settings.mapKey);if(map&&complex()){resizeDetailMap();map.setCenter(new naver.maps.LatLng(complex().lat,complex().lng));map.setZoom(17);void loadFootprints();}}
+async function prepareDetailMap(){if(!complex()||recordPage)return;if($('#complex-info').open)void loadComplexBasics();if(!map&&settings.mapKey)await loadMap(settings.mapKey);if(map&&complex()){resizeDetailMap();map.setCenter(new naver.maps.LatLng(complex().lat,complex().lng));map.setZoom(17);void loadFootprints();}}
 function footprintKey(c){return [c.id,c.name,c.lat,c.lng].join('|');}
 async function loadFootprints(force=false){
  const c=complex();if(!c||demo||!map||recordPage)return;

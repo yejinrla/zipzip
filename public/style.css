@@ -349,3 +349,14 @@ body.record-view .toast{bottom:calc(96px + var(--safe-b))}
 .workspace-card strong{font-size:16px;font-weight:600;color:var(--ink)}
 .workspace-card small{display:block;font-size:14px;color:var(--muted)}
 .workspace-card:hover strong{color:var(--pine)}
+/* Basic info stays folded until asked for. */
+details.complex-info{padding:0}
+.complex-info>summary{list-style:none;min-height:48px;padding:0 var(--s3);display:flex;align-items:center;justify-content:space-between;gap:var(--s2);font-size:15px;font-weight:600;cursor:pointer;border-radius:var(--r-m)}
+.complex-info>summary::-webkit-details-marker{display:none}
+.complex-info>summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .2s var(--ease)}
+.complex-info[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+.complex-info>summary:hover{background:var(--bg)}
+.complex-info[open]>summary{border-bottom:1px solid var(--line-soft);border-radius:var(--r-m) var(--r-m) 0 0}
+.complex-info[open]>:not(summary){margin-left:var(--s3);margin-right:var(--s3)}
+.complex-info[open]>#complex-info-status{margin-top:12px}
+.complex-info[open]>:last-child{margin-bottom:var(--s3)}
