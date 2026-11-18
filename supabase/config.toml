@@ -1,0 +1,5 @@
+project_id = "zipzip"
+
+[functions.journal-share]
+# Anonymous read capability is verified by the function, rather than a user JWT.
+verify_jwt = false
