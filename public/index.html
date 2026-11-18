@@ -253,6 +253,18 @@
           </div>
         </fieldset>
 
+        <fieldset class="form-section" id="complex-assessment" hidden>
+          <legend>단지 핵심 체크</legend>
+          <p class="assessment-guide">확인한 항목만 선택하세요. 다시 누르면 선택이 해제됩니다.</p>
+          <div class="field"><label for="complex-walk">역·버스까지 실제 도보</label><input id="complex-walk" maxlength="40" placeholder="예: 지하철 8분, 버스 3분"></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cTransport">교통·접근성</span><p class="assessment-hint">역·버스까지 실제 거리, 언덕과 보행로</p><div id="choice-cTransport" class="chips" role="group" aria-labelledby="label-cTransport"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cInfra">생활 편의</span><p class="assessment-hint">마트·병원·학교·공원 접근성</p><div id="choice-cInfra" class="chips" role="group" aria-labelledby="label-cInfra"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cEnvironment">단지 환경</span><p class="assessment-hint">동 간 거리, 조경, 산책로와 공용시설</p><div id="choice-cEnvironment" class="chips" role="group" aria-labelledby="label-cEnvironment"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cManagement">외관·관리</span><p class="assessment-hint">외벽·공동현관 상태, 청결과 분리수거장</p><div id="choice-cManagement" class="chips" role="group" aria-labelledby="label-cManagement"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cParking">주차·보안</span><p class="assessment-hint">주차 여유, 차량 동선과 출입 통제</p><div id="choice-cParking" class="chips" role="group" aria-labelledby="label-cParking"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cComfort">소음·쾌적성</span><p class="assessment-hint">도로·공사 소음, 냄새와 햇빛·개방감</p><div id="choice-cComfort" class="chips" role="group" aria-labelledby="label-cComfort"></div></div>
+        </fieldset>
+
         <fieldset class="form-section">
           <legend>메모와 사진</legend>
           <div class="field">
