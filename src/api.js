@@ -1,3 +1,4 @@
+import {loadComplexInfo} from './complex-info.js';
 import {loadBuildingData} from './building-data.js';
 const json=(data,status=200)=>Response.json(data,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 const fail=(message,status=400)=>{throw Object.assign(new Error(message),{status});};
@@ -35,6 +36,12 @@ export async function handleApi(request,env){try{
  if(method==='GET')return json({state:old?await old.json():{complexes:[]},revision:old?.etag||null});
  if(method==='PUT'){const {state,revision}=await limitedJson(request);validate(state);if((old?.etag||null)!==revision)return json({error:'다른 화면에서 기록이 변경됐어요. 내용을 복사한 뒤 새로고침해 주세요.'},409);
  const saved=await env.BUCKET.put(key,JSON.stringify(state),{onlyIf:revision?{etagMatches:revision}:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});if(!saved)return json({error:'다른 화면에서 변경됐어요. 새로고침 후 다시 시도해 주세요.'},409);return json({revision:saved.etag});}
+ }
+ if(p==='/api/complex-info'&&method==='GET'){
+ const saved=await env.BUCKET.get(owner+'/state'),state=saved?await saved.json():{complexes:[]},c=state.complexes.find(c=>c.id===url.searchParams.get('complex'));
+ if(!c)return json({error:'단지를 찾을 수 없습니다.'},404);
+ if(!env.DATA_GO_KR_SERVICE_KEY||!env.VWORLD_API_KEY)return json({error:'단지 기본 정보 연결을 준비 중이에요.',code:'NOT_CONFIGURED'},503);
+ try{return json({info:await loadComplexInfo(c,env)});}catch{return json({error:'단지 기본 정보를 불러오지 못했어요. 다시 시도해 주세요.'},502);}
  }
  if(p==='/api/buildings'&&method==='GET'){
  const saved=await env.BUCKET.get(owner+'/state'),state=saved?await saved.json():{complexes:[]};

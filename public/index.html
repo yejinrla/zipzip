@@ -125,6 +125,13 @@
     <div class="sidebar" id="sidebar">
       <div id="complex-list" class="complex-list"></div>
     </div>
+    <section class="complex-info" aria-labelledby="complex-info-title">
+      <h2 id="complex-info-title">단지 기본 정보</h2>
+      <p id="complex-info-status" role="status">기본 정보를 불러오는 중…</p>
+      <dl id="complex-info-fields"></dl>
+      <p id="complex-info-source" class="complex-info-source"></p>
+      <button id="retry-complex-info" class="btn btn-text btn-small" type="button" hidden>다시 조회</button>
+    </section>
     <section class="map-section" aria-label="단지 지도">
       <div id="map"></div>
       <p id="map-loading" class="map-loading" role="status" hidden><span class="visually-hidden">지도를 불러오는 중</span></p>
