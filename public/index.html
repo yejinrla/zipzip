@@ -60,7 +60,7 @@
     <a id="home-link" class="brand" href="/" aria-label="집.zip 홈"><span class="brandmark" aria-hidden="true"></span>집.zip</a>
     <button id="change-complex" class="btn btn-text" type="button" hidden>다른 단지 검색</button>
     <button id="signout" class="btn btn-text btn-small" type="button">로그아웃</button>
-    <button id="settings" class="icon-btn" type="button" aria-label="설정">
+    <button id="settings" hidden class="icon-btn" type="button" aria-label="설정">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
     </button>
   </header>
@@ -92,6 +92,7 @@
       <div id="home-recent-list" class="entry-list"></div>
     </section>
 
+<section id="workspace-section" class="home-section" hidden><h2>함께 기록하는 아파트</h2><p id="workspace-status"></p><div id="workspace-list"></div><button id="workspace-refresh" class="btn btn-text btn-small" type="button">목록 새로고침</button></section>
     <section id="recent-section" class="home-section" aria-labelledby="recent-title" hidden>
       <div class="section-head">
         <h2 id="recent-title">다시 볼 단지</h2>
@@ -117,23 +118,32 @@
       <p id="records-count" class="meta"></p>
     </div>
     <button id="records-map" class="btn btn-secondary btn-small records-map" type="button" hidden>단지 지도 보기</button>
+    <button id="share-records" class="btn btn-text btn-small" type="button" hidden>함께 기록하기</button>
+    <div id="records-scope-tabs" class="records-scope-tabs" role="tablist" aria-label="기록 종류" hidden></div>
     <div id="records-sort" class="chips sort-filter" role="group" aria-label="정렬" hidden></div>
     <div id="records-list" class="card-list"></div>
   </section>
 
   <main id="detail-page" class="detail-page" hidden>
     <div class="sidebar" id="sidebar">
-      <div id="complex-list" class="complex-list"></div>
+      <p id="workspace-banner" class="workspace-banner" hidden></p><div id="complex-list" class="complex-list"></div><div class="complex-share-action"><button id="share-complex" class="btn btn-text btn-small" type="button">함께 기록하기</button></div>
     </div>
+    <section class="complex-info" aria-labelledby="complex-info-title">
+      <h2 id="complex-info-title">단지 기본 정보</h2>
+      <p id="complex-info-status" role="status">기본 정보를 불러오는 중…</p>
+      <dl id="complex-info-fields"></dl>
+      <p id="complex-info-source" class="complex-info-source"></p>
+      <button id="retry-complex-info" class="btn btn-text btn-small" type="button" hidden>다시 조회</button>
+    </section>
     <section class="map-section" aria-label="단지 지도">
       <div id="map"></div>
       <p id="map-loading" class="map-loading" role="status" hidden><span class="visually-hidden">지도를 불러오는 중</span></p>
       <div id="map-placeholder">
         <div class="schematic" id="schematic" hidden></div>
         <div class="connect-card" id="connect-card">
-          <h2>지도를 연결해 주세요</h2>
-          <p>네이버 지도를 연결하면 단지 주변을 보며 동별로 기록할 수 있어요.</p>
-          <button class="btn btn-primary" id="connect-start" type="button">네이버 지도 연결</button>
+          <h2>지도를 불러오지 못했어요</h2>
+          <p>잠시 후 새로고침해 주세요. 지도 없이도 기록을 남길 수 있어요.</p>
+          <button class="btn btn-primary" id="connect-start" hidden type="button">네이버 지도 연결</button>
           <button class="btn btn-text" id="demo-start" type="button">샘플 먼저 보기</button>
         </div>
       </div>
@@ -151,6 +161,7 @@
       </div>
       <div class="map-bottom">
         <p class="map-bottom-hint">건물을 눌러 그 동에 기록하거나, 직접 입력하세요.</p>
+        <button class="btn btn-secondary" id="add-complex-record" type="button">단지 전체 기록</button>
         <button class="btn btn-primary add-button" id="add-building" type="button" disabled>기록 추가</button>
       </div>
       <div class="map-hint" id="map-hint" hidden></div>
@@ -176,7 +187,7 @@
       <form id="visit-form" class="visit-form">
         <fieldset class="form-section">
           <legend>기본</legend>
-          <div class="field-row">
+          <div class="field-row" id="property-location">
             <div id="record-dong-row" class="field" hidden>
               <label for="record-dong">동</label>
               <input id="record-dong" list="record-dong-options" placeholder="101동" maxlength="40" autocomplete="off">
@@ -193,7 +204,7 @@
           </div>
         </fieldset>
 
-        <fieldset class="form-section">
+        <fieldset class="form-section" id="property-deal">
           <legend>거래</legend>
           <div class="field">
             <span class="field-label" id="label-deal">거래 유형</span>
@@ -205,7 +216,7 @@
           </div>
         </fieldset>
 
-        <fieldset class="form-section">
+        <fieldset class="form-section" id="property-condition">
           <legend>집 상태</legend>
           <div class="field">
             <span class="field-label" id="label-renovation">수리</span>
@@ -233,7 +244,7 @@
           </div>
         </fieldset>
 
-        <fieldset class="form-section">
+        <fieldset class="form-section" id="property-living">
           <legend>생활</legend>
           <div class="field">
             <span class="field-label" id="label-noise">위아래 소음</span>
@@ -243,6 +254,18 @@
             <span class="field-label" id="label-mold">결로·곰팡이</span>
             <div id="choice-mold" class="chips" role="group" aria-labelledby="label-mold"></div>
           </div>
+        </fieldset>
+
+        <fieldset class="form-section" id="complex-assessment" hidden>
+          <legend>단지 핵심 체크</legend>
+          <p class="assessment-guide">확인한 항목만 선택하세요. 다시 누르면 선택이 해제됩니다.</p>
+          <div class="field"><label for="complex-walk">역·버스까지 실제 도보</label><input id="complex-walk" maxlength="40" placeholder="예: 지하철 8분, 버스 3분"></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cTransport">교통·접근성</span><p class="assessment-hint">역·버스까지 실제 거리, 언덕과 보행로</p><div id="choice-cTransport" class="chips" role="group" aria-labelledby="label-cTransport"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cInfra">생활 편의</span><p class="assessment-hint">마트·병원·학교·공원 접근성</p><div id="choice-cInfra" class="chips" role="group" aria-labelledby="label-cInfra"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cEnvironment">단지 환경</span><p class="assessment-hint">동 간 거리, 조경, 산책로와 공용시설</p><div id="choice-cEnvironment" class="chips" role="group" aria-labelledby="label-cEnvironment"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cManagement">외관·관리</span><p class="assessment-hint">외벽·공동현관 상태, 청결과 분리수거장</p><div id="choice-cManagement" class="chips" role="group" aria-labelledby="label-cManagement"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cParking">주차·보안</span><p class="assessment-hint">주차 여유, 차량 동선과 출입 통제</p><div id="choice-cParking" class="chips" role="group" aria-labelledby="label-cParking"></div></div>
+          <div class="field assessment-field"><span class="field-label" id="label-cComfort">소음·쾌적성</span><p class="assessment-hint">도로·공사 소음, 냄새와 햇빛·개방감</p><div id="choice-cComfort" class="chips" role="group" aria-labelledby="label-cComfort"></div></div>
         </fieldset>
 
         <fieldset class="form-section">
@@ -345,5 +368,4 @@
 <script src="/auth.js" defer></script>
 <script src="/photos.js" defer></script>
 <script src="/app.js" defer></script>
-</body>
-</html>
+<dialog id="share-dialog" aria-labelledby="share-title"><div class="dialog-head"><h2 id="share-title">함께 기록하기</h2><button id="share-close" class="btn btn-text" type="button" aria-label="멤버 관리 닫기">×</button></div><p id="share-description"></p><p>추가한 이메일로 가입·로그인한 회원만 이 아파트의 기록과 사진을 함께 보고, 기록을 추가·수정할 수 있어요. 초대와 내보내기, 기록 삭제는 소유자만 관리해요.</p><p>이메일은 발송되지 않아요. 상대방에게 가입·로그인을 안내해 주세요.</p><label for="share-email">함께 쓸 회원의 이메일</label><input id="share-email" type="email" maxlength="254" autocomplete="off" placeholder="friend@example.com"><div class="share-actions"><button id="share-invite" class="btn btn-primary" type="button">멤버 추가</button></div><p id="share-status" role="status"></p><div id="share-members"></div></dialog></body></html>

@@ -1,19 +1,11 @@
+import {validate} from './journal-validation.js';
+import {loadComplexInfo} from './complex-info.js';
 import {loadBuildingData} from './building-data.js';
 const json=(data,status=200)=>Response.json(data,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 const fail=(message,status=400)=>{throw Object.assign(new Error(message),{status});};
 const str=(v,max)=>typeof v==='string'&&v.length<=max;
 const id=v=>typeof v==='string'&&/^[\w-]{1,80}$/.test(v);
 const coord=v=>Number.isFinite(v.lat)&&v.lat>=33&&v.lat<=39.5&&Number.isFinite(v.lng)&&v.lng>=124&&v.lng<=132;
-const DETAIL_CHOICES={deal:['매매','전세','월세'],renovation:['올수리','부분수리','수리 안 됨'],expansion:['확장','부분확장','비확장'],facing:['남향','남동향','남서향','동향','서향','북동향','북서향','북향'],outlook:['트임','일부 가림','막힘'],noise:['조용함','보통','시끄러움'],mold:['없음','조금 있음','심함']};
-const DETAIL_TEXT={unit:20,price:40,renovatedWhen:20,view:100,moldNote:300};
-function validDetails(d){if(d===undefined)return true;if(!d||typeof d!=='object'||Array.isArray(d))return false;return Object.entries(d).every(([k,v])=>DETAIL_CHOICES[k]?DETAIL_CHOICES[k].includes(v):DETAIL_TEXT[k]?str(v,DETAIL_TEXT[k])&&v.trim().length>0:false);}
-function validate(state){
- if(!state||!Array.isArray(state.complexes)||state.complexes.length>200)fail('단지 정보를 확인해 주세요.');
- const seen=new Set();const unique=v=>{if(!id(v)||seen.has(v))fail('중복되거나 올바르지 않은 항목입니다.');seen.add(v);};
- for(const c of state.complexes){unique(c.id);if(!str(c.name,120)||!c.name.trim()||!str(c.address,300)||!coord(c)||!Array.isArray(c.buildings)||c.buildings.length>300)fail('단지 이름과 위치를 확인해 주세요.');
- for(const b of c.buildings){unique(b.id);if(!str(b.name,40)||!b.name.trim()||!coord(b)||!Array.isArray(b.visits)||b.visits.length>500)fail('동 이름과 위치를 확인해 주세요.');
- for(const v of b.visits){unique(v.id);if(!/^\d{4}-\d{2}-\d{2}$/.test(v.date)||Number.isNaN(Date.parse(v.date))||new Date(v.date).toISOString().slice(0,10)!==v.date||!str(v.memo,10000)||!Array.isArray(v.photos)||v.photos.length>12||!v.photos.every(id)||!validDetails(v.details))fail('방문일, 메모 또는 사진을 확인해 주세요.');}}}
-}
 async function limitedJson(request,max=1024*1024){const t=await request.text();if(t.length>max)fail('저장할 내용이 너무 많습니다.',413);try{return JSON.parse(t);}catch{fail('요청 형식을 확인해 주세요.');}}
 async function settings(env,key){const o=await env.BUCKET.get(key+'/settings');return o?await o.json():{};}
 export async function handleApi(request,env){try{
@@ -36,6 +28,12 @@ export async function handleApi(request,env){try{
  if(method==='PUT'){const {state,revision}=await limitedJson(request);validate(state);if((old?.etag||null)!==revision)return json({error:'다른 화면에서 기록이 변경됐어요. 내용을 복사한 뒤 새로고침해 주세요.'},409);
  const saved=await env.BUCKET.put(key,JSON.stringify(state),{onlyIf:revision?{etagMatches:revision}:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});if(!saved)return json({error:'다른 화면에서 변경됐어요. 새로고침 후 다시 시도해 주세요.'},409);return json({revision:saved.etag});}
  }
+ if(p==='/api/complex-info'&&method==='GET'){
+ const saved=await env.BUCKET.get(owner+'/state'),state=saved?await saved.json():{complexes:[]},c=state.complexes.find(c=>c.id===url.searchParams.get('complex'));
+ if(!c)return json({error:'단지를 찾을 수 없습니다.'},404);
+ if(!env.DATA_GO_KR_SERVICE_KEY||!env.VWORLD_API_KEY)return json({error:'단지 기본 정보 연결을 준비 중이에요.',code:'NOT_CONFIGURED'},503);
+ try{return json({info:await loadComplexInfo(c,env)});}catch(e){const stages=['ADDRESS','KAPT_LIST','KAPT_BASIC','KAPT_DETAIL'],kinds=['TIMEOUT','NETWORK','AUTH','LIMIT','HTTP','FORMAT','PARAMETER','PROVIDER','RESULT','TOO_MANY'];const code=stages.some(s=>kinds.some(k=>e.infoCode===s+'_'+k))?e.infoCode:'INFO_UNKNOWN';console.warn('complex_info_failed',code);const help=code.endsWith('_AUTH')?'API 인증키와 서비스 활용승인 상태를 확인해야 해요.':code.endsWith('_TIMEOUT')?'외부 API 응답이 지연되고 있어요. 다시 시도해 주세요.':'단지 기본 정보를 불러오지 못했어요. 다시 시도해 주세요.';return json({error:help+' ['+code+']',code},502);}
+ }
  if(p==='/api/buildings'&&method==='GET'){
  const saved=await env.BUCKET.get(owner+'/state'),state=saved?await saved.json():{complexes:[]};
  const c=state.complexes.find(c=>c.id===url.searchParams.get('complex'));
@@ -44,7 +42,7 @@ export async function handleApi(request,env){try{
  try{const found=await loadBuildingData(c,env);return json({items:found.items,candidates:found.candidates,source:'행정안전부 도로명주소 건물 · 브이월드'});}catch(e){const code=e.buildingCode||'PROVIDER_ERROR';console.warn('building_lookup_failed',code);return json({error:e.buildingCode?e.message+' ['+code+']':'건물 정보를 처리하지 못했어요. [PROVIDER_ERROR]',code},502);}
  }
  if(p==='/api/search'&&method==='GET'){
- const q=url.searchParams.get('q')?.trim();if(!q||q.length>100)fail('검색어를 1~100자로 입력해 주세요.');const s=await settings(env,owner),clientId=s.searchId||env.NAVER_SEARCH_ID,secret=s.searchSecret||env.NAVER_SEARCH_SECRET;if(!clientId||!secret)return json({error:'설정에서 네이버 지역 검색 Client ID와 Client Secret을 연결해 주세요.'},503);
+ const q=url.searchParams.get('q')?.trim();if(!q||q.length>100)fail('검색어를 1~100자로 입력해 주세요.');const s=await settings(env,owner),clientId=s.searchId||env.NAVER_SEARCH_ID,secret=s.searchSecret||env.NAVER_SEARCH_SECRET;if(!clientId||!secret)return json({error:'단지 검색 연결을 준비 중이에요. 잠시 후 다시 시도해 주세요.'},503);
  const target=new URL('https://naverapihub.apigw.ntruss.com/search/v1/local');target.search=new URLSearchParams({query:q,display:'5',sort:'random',format:'json'});let res;try{res=await (env.fetch||fetch)(target,{headers:{'X-NCP-APIGW-API-KEY-ID':clientId,'X-NCP-APIGW-API-KEY':secret},signal:AbortSignal.timeout(10000)});}catch{return json({error:'검색 서비스 연결이 지연되고 있어요. 다시 시도해 주세요.'},502);}if(!res.ok)return json({error:'네이버 검색 요청을 처리하지 못했어요. API 키와 사용량을 확인해 주세요.'},502);
  const data=await res.json();return json({items:(data.items||[]).map(x=>({name:x.title.replace(/<[^>]*>/g,''),address:x.roadAddress||x.address,lat:Math.abs(Number(x.mapy))>90?Number(x.mapy)/1e7:Number(x.mapy),lng:Math.abs(Number(x.mapx))>180?Number(x.mapx)/1e7:Number(x.mapx)})).filter(coord)});
  }

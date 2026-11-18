@@ -1,0 +1,9 @@
+project_id = "zipzip"
+
+[functions.journal-share]
+# Retired endpoint returns 410 without reading any records.
+verify_jwt = false
+
+[functions.journal-workspace]
+# The function authenticates the access token against Auth and checks invitation membership.
+verify_jwt = false

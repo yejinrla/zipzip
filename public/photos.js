@@ -1,7 +1,7 @@
 import{PhotoLoader}from'../src/photo-loader.js';
 // Photos come straight from Supabase Storage with the user's own session (RLS applies);
 // the /api/photos route stays as a fallback.
-const loader=new PhotoLoader({token:()=>window.zipzipAuth.token(),download:id=>window.zipzipAuth.photo?window.zipzipAuth.photo(id):null});
+const loader=new PhotoLoader({token:()=>window.zipzipAuth.token(),download:id=>window.zipzipWorkspace?.active()?null:window.zipzipAuth.photo?window.zipzipAuth.photo(id):null,fetcher:(path,options)=>fetch(window.zipzipWorkspace?.photoPath(decodeURIComponent(path.split('/').pop()))||path,options)});
 const targets=new WeakMap();
 // A failed photo shows a retry button with a short reason code instead of a broken image.
 function showFailure(img,id,anchor,error){const holder=anchor||img;holder.hidden=true;const fail=document.createElement('button');fail.type='button';fail.className='photo-failed';fail.textContent='사진을 불러오지 못했어요. 눌러서 다시 시도';if(error?.code){const code=document.createElement('small');code.textContent=error.code;fail.append(code);}fail.onclick=()=>{fail.remove();holder.hidden=false;load(img,id,anchor);};holder.after(fail);}
