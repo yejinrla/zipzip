@@ -14,3 +14,6 @@ Existing details JSON stores cTransport/cInfra/cEnvironment/cManagement/cParking
 
 ## Record hierarchy
 Apartment summary lists only real dong names, plus separate counts for complex records and dong/unit records. Inside an apartment, complex records appear in their own section above property records. Dong filters and price sorting apply only to property records. Existing saved records retain their IDs and URLs.
+
+## Record scope tabs
+Inside each apartment, two tabs switch between 단지 기록 and 동·호수 기록, with record counts. Opening an apartment defaults to 단지 기록 even when empty. Explicit property view is stored as view=units; legacy dong/sort links still restore property view. Returning to complex view clears property filter/sort URL state. Keyboard arrow/Home/End navigation supported.

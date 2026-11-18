@@ -332,3 +332,5 @@ body.record-view .toast{bottom:calc(96px + var(--safe-b))}
 .assessment-guide,.assessment-hint{color:var(--muted);font-size:12px;line-height:1.5}.assessment-guide{margin:0 0 16px}.assessment-hint{margin:2px 0 8px}.assessment-field .chips{gap:8px}.assessment-field .chip{flex:1;min-height:44px}
 
 .record-section-title{font-size:17px;margin:22px 0 6px;color:var(--ink)}.record-section-title:first-child{margin-top:0}.record-card-scope{font-size:13px;color:var(--muted);margin:8px 0 0}
+
+.records-scope-tabs{display:flex;border-bottom:1px solid var(--line,#deded5);margin:16px 0 22px;gap:8px}.records-scope-tabs[hidden]{display:none}.record-scope-tab{flex:1;min-height:48px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font:inherit;font-weight:600;cursor:pointer;padding:12px 8px}.record-scope-tab[aria-selected="true"]{border-bottom-color:var(--green,#285e50);color:var(--green,#285e50)}
