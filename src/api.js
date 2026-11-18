@@ -41,7 +41,7 @@ export async function handleApi(request,env){try{
  const saved=await env.BUCKET.get(owner+'/state'),state=saved?await saved.json():{complexes:[]},c=state.complexes.find(c=>c.id===url.searchParams.get('complex'));
  if(!c)return json({error:'단지를 찾을 수 없습니다.'},404);
  if(!env.DATA_GO_KR_SERVICE_KEY||!env.VWORLD_API_KEY)return json({error:'단지 기본 정보 연결을 준비 중이에요.',code:'NOT_CONFIGURED'},503);
- try{return json({info:await loadComplexInfo(c,env)});}catch{return json({error:'단지 기본 정보를 불러오지 못했어요. 다시 시도해 주세요.'},502);}
+ try{return json({info:await loadComplexInfo(c,env)});}catch(e){const stages=['ADDRESS','KAPT_LIST','KAPT_BASIC','KAPT_DETAIL'],kinds=['TIMEOUT','NETWORK','AUTH','LIMIT','HTTP','FORMAT','PARAMETER','PROVIDER','RESULT','TOO_MANY'];const code=stages.some(s=>kinds.some(k=>e.infoCode===s+'_'+k))?e.infoCode:'INFO_UNKNOWN';console.warn('complex_info_failed',code);const help=code.endsWith('_AUTH')?'API 인증키와 서비스 활용승인 상태를 확인해야 해요.':code.endsWith('_TIMEOUT')?'외부 API 응답이 지연되고 있어요. 다시 시도해 주세요.':'단지 기본 정보를 불러오지 못했어요. 다시 시도해 주세요.';return json({error:help+' ['+code+']',code},502);}
  }
  if(p==='/api/buildings'&&method==='GET'){
  const saved=await env.BUCKET.get(owner+'/state'),state=saved?await saved.json():{complexes:[]};
