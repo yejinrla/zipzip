@@ -60,7 +60,7 @@
     <a id="home-link" class="brand" href="/" aria-label="집.zip 홈"><span class="brandmark" aria-hidden="true"></span>집.zip</a>
     <button id="change-complex" class="btn btn-text" type="button" hidden>다른 단지 검색</button>
     <button id="signout" class="btn btn-text btn-small" type="button">로그아웃</button>
-    <button id="settings" class="icon-btn" type="button" aria-label="설정">
+    <button id="settings" hidden class="icon-btn" type="button" aria-label="설정">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
     </button>
   </header>
@@ -141,9 +141,9 @@
       <div id="map-placeholder">
         <div class="schematic" id="schematic" hidden></div>
         <div class="connect-card" id="connect-card">
-          <h2>지도를 연결해 주세요</h2>
-          <p>네이버 지도를 연결하면 단지 주변을 보며 동별로 기록할 수 있어요.</p>
-          <button class="btn btn-primary" id="connect-start" type="button">네이버 지도 연결</button>
+          <h2>지도를 불러오지 못했어요</h2>
+          <p>잠시 후 새로고침해 주세요. 지도 없이도 기록을 남길 수 있어요.</p>
+          <button class="btn btn-primary" id="connect-start" hidden type="button">네이버 지도 연결</button>
           <button class="btn btn-text" id="demo-start" type="button">샘플 먼저 보기</button>
         </div>
       </div>
