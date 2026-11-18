@@ -365,3 +365,6 @@ details.complex-info{padding:0}
 #sidebar{position:relative}
 #sidebar>.complex-share-action{position:absolute;right:var(--s4);bottom:var(--s3);padding:0}
 #sidebar:has(#share-complex:not([hidden])) .complex-card .card-bottom{min-height:40px;align-items:center;padding-right:128px}
+
+/* Page entry targets keep keyboard navigation without outlining the whole screen. */
+:is(#home-page,#detail-page,#record-page,#records-page)[tabindex="-1"]:focus-visible{outline:none}
