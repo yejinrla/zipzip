@@ -360,3 +360,8 @@ details.complex-info{padding:0}
 .complex-info[open]>:not(summary){margin-left:var(--s3);margin-right:var(--s3)}
 .complex-info[open]>#complex-info-status{margin-top:12px}
 .complex-info[open]>:last-child{margin-bottom:var(--s3)}
+/* Complex header: the name keeps the full width; the share action sits at the
+   right end of the "동 N개 · 기록 M개" line. */
+#sidebar{position:relative}
+#sidebar>.complex-share-action{position:absolute;right:var(--s4);bottom:var(--s3);padding:0}
+#sidebar:has(#share-complex:not([hidden])) .complex-card .card-bottom{min-height:40px;align-items:center;padding-right:128px}
