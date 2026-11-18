@@ -330,3 +330,5 @@ body.record-view .toast{bottom:calc(96px + var(--safe-b))}
 .complex-info{margin:0 var(--s3) var(--s3);padding:16px;border:1px solid var(--line,#deded5);border-radius:var(--r-m);background:var(--paper)}.complex-info h2{font-size:16px;margin:0 0 12px}.complex-info dl{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0}.complex-info dl div{min-width:0}.complex-info dt{font-size:12px;color:var(--muted);margin-bottom:4px}.complex-info dd{margin:0;font-size:14px;overflow-wrap:anywhere}.complex-info p{font-size:13px;color:var(--muted)}.complex-info .complex-info-source{font-size:11px;margin:14px 0 0}
 
 .assessment-guide,.assessment-hint{color:var(--muted);font-size:12px;line-height:1.5}.assessment-guide{margin:0 0 16px}.assessment-hint{margin:2px 0 8px}.assessment-field .chips{gap:8px}.assessment-field .chip{flex:1;min-height:44px}
+
+.record-section-title{font-size:17px;margin:22px 0 6px;color:var(--ink)}.record-section-title:first-child{margin-top:0}.record-card-scope{font-size:13px;color:var(--muted);margin:8px 0 0}
