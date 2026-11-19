@@ -10,6 +10,13 @@ export async function handleWorkspace(request,env,fetcher=fetch){
  if(action==='list'&&request.method==='GET'){if(user.email_confirmed_at&&user.email)await rpc('workspace_claim',{p_actor:user.id,p_email:user.email.toLowerCase()});return json({items:await rpc('workspace_list',{p_actor:user.id})});}
  const owner=url.searchParams.get('owner'),cid=url.searchParams.get('complex');if(!uuid(owner)||!/^[-\w]{1,80}$/.test(cid||''))return json({error:'아파트를 확인해 주세요.'},400);
  const args={p_actor:user.id,p_owner:owner,p_complex:cid};
+ if(action==='members'&&request.method==='GET'){
+ if(!await rpc('workspace_access',args))return json({error:'이 아파트에 접근할 수 없어요.'},403);
+ const target=new URL(env.url+'/rest/v1/journal_collaborators');target.search=new URLSearchParams({user_id:'eq.'+owner,complex_id:'eq.'+cid,member_id:'not.is.null',select:'email,member_id',order:'created_at.asc'});
+ const rowsResponse=await fetcher(target,{headers:service,signal:AbortSignal.timeout(8000)});if(!rowsResponse.ok)throw Error('members');const rows=await rowsResponse.json();
+ const ownerResponse=await fetcher(env.url+'/auth/v1/admin/users/'+owner,{headers:service,signal:AbortSignal.timeout(8000)});if(!ownerResponse.ok)throw Error('owner');const ownerUser=await ownerResponse.json();
+ return json({owner:{email:ownerUser.email||''},members:rows.map(m=>({email:m.email,joined:true,self:m.member_id===user.id}))});
+ }
  if(action==='load'&&request.method==='GET')return json(await rpc('workspace_load',args));
  if(action==='save'&&request.method==='PUT'){
  const text=await request.text();if(text.length>1048576)return json({error:'저장할 내용이 너무 많아요.'},413);let data;try{data=JSON.parse(text);}catch{return json({error:'기록 형식을 확인해 주세요.'},400);}validate(data.state);if(data.state.complexes.length!==1||data.state.complexes[0].id!==cid)return json({error:'아파트 범위를 확인해 주세요.'},400);
