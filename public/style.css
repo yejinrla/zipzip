@@ -241,7 +241,7 @@ body:not(.home-view) .app-header{border-bottom:1px solid var(--line)}
 .visit-when-text{display:flex;flex-direction:column;gap:2px;min-width:0}
 .visit-actions{display:flex;flex:none}
 .visit-actions button{min-height:44px;padding:0 12px;font-size:15px;font-weight:600;color:var(--pine);border-radius:var(--r-s)}
-.visit-actions button:last-child{color:var(--danger);font-weight:500}
+.visit-actions .delete-visit{color:var(--danger);font-weight:500}
 .visit-actions button:hover{background:var(--tint)}
 .visit .photo-grid{display:flex;gap:var(--s2);overflow-x:auto;margin:0 calc(var(--s3) * -1);padding:0 var(--s3);scroll-snap-type:x mandatory;scrollbar-width:none}
 .visit .photo-grid::-webkit-scrollbar{display:none}
@@ -368,3 +368,7 @@ details.complex-info{padding:0}
 
 /* Page entry targets keep keyboard navigation without outlining the whole screen. */
 :is(#home-page,#detail-page,#record-page,#records-page)[tabindex="-1"]:focus-visible{outline:none}
+
+.pass-badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:8px;background:#ece7e2;color:#6b5145;font-size:12px;font-weight:600;white-space:nowrap}.visit-actions{flex-wrap:wrap}.visit-actions .pass-action{white-space:nowrap}.visit-actions .pass-action[aria-pressed="true"]{color:#6b5145;background:#ece7e2;border-radius:6px}
+
+.record-card-head{flex-wrap:wrap}.visit-header:has(.pass-action){flex-wrap:wrap}.visit-header:has(.pass-action) .visit-actions{margin-left:auto}
