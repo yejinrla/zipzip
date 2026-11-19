@@ -379,4 +379,9 @@ details.complex-info{padding:0}
 
 #records-page .records-scope-tabs{margin-bottom:0}
 
-.records-add-action{display:flex;justify-content:flex-end;padding:16px var(--s3) 0}
+.records-page-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:16px var(--s3) 0}
+.records-page-actions:not(:has(> #records-map:not([hidden]))){display:none}
+.records-write-actions{display:flex;align-items:center;gap:8px}
+.records-write-actions:not(:has(> :not([hidden]))){display:none}
+.records-page-actions .records-map{margin:0}
+.records-add-action{display:flex}
